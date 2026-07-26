@@ -19,7 +19,13 @@
 <meta property="og:url" content="https://cosine753.github.io/">
 <meta property="og:title" content="{{需你填写:姓名}} — 眼科临床研究 · 临床证据可核验性">
 <meta property="og:description" content="研究兴趣：眼科影像采集质量与记录规范、临床证据的可核验性与可复现性、公开眼科数据集的参考标准可靠性。">
-<meta name="twitter:card" content="summary">
+<!-- 卡片图用本地文件，不要用 data URI —— 不少平台（微信、部分邮件客户端）不认 data URI。
+     og.png 由 tools/make-og.ps1 生成；填完姓名后 fill.ps1 会自动带姓名重新生成一版。 -->
+<meta property="og:image" content="https://cosine753.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="个人学术主页社交卡片：眼科临床研究 · 临床证据可核验性">
+<meta name="twitter:card" content="summary_large_image">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f5e63'/%3E%3Ccircle cx='16' cy='16' r='7.5' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23ffffff'/%3E%3C/svg%3E">
 
@@ -227,6 +233,30 @@
     font-size: 0.95rem;
   }
 
+  /* 论文与科研项目。这两个版块默认是注释掉的（见 <main> 末尾），
+     样式先放在这里，启用时不必再回来补 CSS。 */
+  .pub .authors,
+  .pub .venue {
+    display: block;
+    color: var(--ink-2);
+    font-size: 0.93rem;
+  }
+  .pub .venue { font-variant-numeric: tabular-nums; }
+  .pub .title { font-weight: 600; }
+  /* 作者列表里你自己的名字用这个类标出来 */
+  .pub .me { color: var(--ink); font-weight: 700; }
+  .pub .status {
+    display: inline-block;
+    margin-left: 0.4em;
+    padding: 0 0.45em;
+    font-size: 0.78em;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--chip-bg);
+    border-radius: 3px;
+    vertical-align: 0.1em;
+  }
+
   /* 方法与技能 */
   .skills { list-style: none; }
   .skills li + li { margin-top: 1.25rem; }
@@ -309,15 +339,24 @@
       <ul class="contact">
         <li><a href="mailto:{{需你填写:邮箱}}">{{需你填写:邮箱}}</a></li>
         <li><a href="https://github.com/Cosine753" rel="me">GitHub</a></li>
-        <!-- 有 ORCID 后取消下一行注释并填入编号；没有可以先不放 -->
+        <!-- 有 ORCID 后取消下一行注释并填入编号；没有可以先不放。
+             填了 myinfo.txt 里的 ORCID，fill.ps1 会自动取消注释；留空则整行删掉。 -->
         <!-- <li><a href="https://orcid.org/{{需你填写:ORCID}}" rel="me">ORCID</a></li> -->
+        <!-- 做好 cv.pdf 后取消下一行注释，并把日期改成实际更新月份。
+             流程：填完 cv.html → 浏览器打开 → 打印 → 目标选「另存为 PDF」→ 存到仓库根目录，命名 cv.pdf。
+             固定用 cv.pdf 这个名字，旧邮件里的链接才能一直有效；不要放网盘链接。 -->
+        <!-- <li><a href="cv.pdf">CV（PDF，2026-07 更新）</a></li> -->
       </ul>
     </nav>
     <nav class="site-nav" aria-label="页内导航">
       <ul>
         <li><a href="#about">简介</a></li>
         <li><a href="#research">研究兴趣</a></li>
+        <!-- 启用「论文」「科研项目」版块时，把下面两行各自的注释去掉 -->
+        <!-- <li><a href="#publications">论文</a></li> -->
+        <!-- <li><a href="#projects">科研项目</a></li> -->
         <li><a href="#methods">方法与技能</a></li>
+        <li><a href="#tools">公开工具</a></li>
         <li><a href="#education">教育经历</a></li>
         <li><a href="#contact">联系</a></li>
       </ul>
@@ -361,6 +400,66 @@
       </ul>
     </section>
 
+    <!-- ==================================================================
+         「论文」与「科研项目」占位版块 —— 默认不展示。
+
+         启用步骤（两件事必须同时做，否则 check.ps1 的 E 项会报错）：
+           1. 删掉本段开头那行的注释起始标记，和本段末尾那行的注释结束标记
+           2. 到上面 .site-nav 里，把对应的那条 <li> 取消注释
+
+         （注意：注释里不能出现字面的结束标记，写上去会让注释在那里提前结束、
+           把下面的模板块变成真的页面内容。所以这里只能用文字描述。）
+
+         每个版块给了一条示例结构。要加第二条就把整个 <li> 复制一份，
+         并把里面的字段名改成「论文二…」「项目二…」。没有内容的版块就整个留着不启用，
+         空着一个只有标题的版块比没有这个版块更难看。
+
+         填完之后跑一次 check.ps1：这些占位符一旦被启用就会变成阻断项，
+         逼你在上线前填干净，不会出现「论文一标题」这种模板文字被推上线的情况。
+
+         ------------------------------------------------------------------
+         关于论文，两条不要越过的线：
+
+         · **状态要写实**。已发表就写期刊和年份；在审就写「在审」；还没投就写
+           「稿件准备中」。把在投写成已发表，评审委员会核一下就穿，而这是学术诚信
+           问题，不是措辞问题。
+         · **未投稿论文不要放头条结论**。写研究问题、方法和做到什么程度是安全的，
+           公开主估计值则可能影响后续投稿。
+
+         作者列表按实际署名顺序写，自己的名字用 <span class="me"> 包起来。
+         有 DOI 就放 DOI（形如 https://doi.org/10.xxxx/yyyy），它比期刊主页链接耐久。
+
+         关于科研项目：写清楚**你实际承担的具体工作**（数据清洗、统计分析、
+         影像采集质控、伦理送审……），不要只写「参与」。只是挂名或旁听的，不要列——
+         面试时被追问细节答不上来，比少列一条项目的代价大得多。
+         ==================================================================
+
+    <section id="publications" aria-labelledby="pub-h">
+      <span class="label" aria-hidden="true">Publications</span>
+      <h2 id="pub-h">论文</h2>
+      <ul class="research pub">
+        <li>
+          <span class="authors">{{需你填写:论文一作者列表}}</span>
+          <strong class="title">{{需你填写:论文一标题}}</strong>
+          <span class="venue">{{需你填写:论文一发表信息}}</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="projects" aria-labelledby="proj-h">
+      <span class="label" aria-hidden="true">Projects</span>
+      <h2 id="proj-h">科研项目</h2>
+      <ul class="research pub">
+        <li>
+          <strong class="title">{{需你填写:项目一名称}}</strong>
+          <span class="venue">{{需你填写:项目一来源编号与起止年份}}</span>
+          <span class="desc">{{需你填写:项目一你承担的具体工作}}</span>
+        </li>
+      </ul>
+    </section>
+
+         ============ 论文 / 科研项目 占位版块结束 ============ -->
+
     <section id="methods" aria-labelledby="methods-h">
       <span class="label" aria-hidden="true">Methods</span>
       <h2 id="methods-h">方法与技能</h2>
@@ -392,6 +491,22 @@
       </ul>
     </section>
 
+    <section id="tools" aria-labelledby="tools-h">
+      <span class="label" aria-hidden="true">Tools</span>
+      <h2 id="tools-h">公开工具</h2>
+      <ul class="research">
+        <li>
+          <strong>儿童近视与干眼共病问卷风险分层计算器</strong>
+          <span class="desc">
+            <a href="https://cosine753.github.io/myopia-risk-calculator/">在线访问</a> ·
+            <a href="https://github.com/Cosine753/myopia-risk-calculator">源码</a> ·
+            MIT 许可 · 版本 v1.0.0。锁定两阶段 Logistic 模型的浏览器演示版，全部计算在本地完成，
+            无后端、无外部依赖、不写入浏览器存储。研究演示用途，不是诊断工具。
+          </span>
+        </li>
+      </ul>
+    </section>
+
     <section id="education" aria-labelledby="edu-h">
       <span class="label" aria-hidden="true">Education</span>
       <h2 id="edu-h">教育经历</h2>
@@ -417,10 +532,15 @@
     </section>
 
     <!-- ==================================================================
-         以下版块已写好但暂不展示（你说了论文和在做的都先不放）。
-         想启用时：把该版块前后的注释标记删掉，并在上面 .site-nav 里
-         补一个对应的 <li><a href="#works">研究工作</a></li>。
-         启用前请先确认：未投稿论文的头条结论仍建议不要放上来。
+         「研究工作」版块已写好但暂不展示：四条都是未投稿稿件。
+         （原本一起注释掉的「公开工具」版块已启用，见上方 #tools。）
+
+         想启用时：删掉本段前后的注释标记，并在上面 .site-nav 里补一条
+         <li><a href="#works">研究工作</a></li>。两件事必须同时做——
+         check.ps1 的 E 项会比对导航与实际版块，漏一边就报错。
+
+         启用前请先确认：未投稿论文的头条结论仍建议不要放上来。写研究问题、
+         方法和做到什么程度是安全的，公开主估计值则可能影响后续投稿。
          ==================================================================
 
     <section id="works" aria-labelledby="works-h">
@@ -442,21 +562,6 @@
         <li>
           <strong>眼科临床痛点与公开数据集调研</strong>
           <span class="desc">内部报告，未投稿。从可获得的公开数据反向识别临床问题，逐条标注证据等级；对多个公开数据集做了字节级复核，并把参考标准的不确定性量化为可测量的指标。</span>
-        </li>
-      </ul>
-    </section>
-
-    <section id="tools" aria-labelledby="tools-h">
-      <span class="label" aria-hidden="true">Tools</span>
-      <h2 id="tools-h">公开工具</h2>
-      <ul class="research">
-        <li>
-          <strong>儿童近视与干眼共病问卷风险分层计算器</strong>
-          <span class="desc">
-            <a href="https://cosine753.github.io/myopia-risk-calculator/">在线访问</a> ·
-            MIT 许可 · 版本 v1.0.0。锁定两阶段 Logistic 模型的浏览器演示版，全部计算在本地完成，
-            无后端、无外部依赖、不写入浏览器存储。研究演示用途，不是诊断工具。
-          </span>
         </li>
       </ul>
     </section>

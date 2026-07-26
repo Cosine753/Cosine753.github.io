@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  只列首页。cv.html 是 PDF 的排版源文件（noindex），不列入。
+  lastmod 由 fill.ps1 自动更新；手改内容后也可以自己改成当天日期。
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://cosine753.github.io/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

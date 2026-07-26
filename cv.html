@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- 这一页是 cv.pdf 的排版源文件，本身不需要被搜索引擎收录：
+     该被收录的是首页，该被下载的是 PDF。这里用 noindex 而不是在
+     robots.txt 里 Disallow —— Disallow 会让爬虫根本读不到这行 noindex。 -->
+<meta name="robots" content="noindex, nofollow">
+
+<title>{{需你填写:姓名}} — 学术简历（CV）</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f5e63'/%3E%3Ccircle cx='16' cy='16' r='7.5' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23ffffff'/%3E%3C/svg%3E">
+
+<style>
+  /* 这一页只有一个用途：在浏览器里「打印成 PDF」，得到 cv.pdf。
+     屏幕上刻意不跟随系统暗色模式 —— 预览必须长得跟打出来的一样。 */
+
+  :root {
+    --ink:      #12191d;
+    --ink-2:    #3f4b54;
+    --ink-3:    #5d6b75;
+    --accent:   #0f5e63;
+    --hairline: #d8dee1;
+    --paper:    #ffffff;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑",
+                 "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+    color: var(--ink);
+    background: #eceff1;
+    line-height: 1.6;
+    overflow-wrap: break-word;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* 屏幕上模拟一张 A4 纸，所见即所得 */
+  .paper {
+    background: var(--paper);
+    width: 210mm;
+    min-height: 297mm;
+    margin: 1.5rem auto;
+    padding: 18mm 16mm;
+    box-shadow: 0 2px 18px rgba(0, 0, 0, 0.13);
+  }
+
+  /* ---------- 屏幕上的导出说明，打印时自动消失 ---------- */
+  .howto {
+    max-width: 210mm;
+    margin: 1.5rem auto 0;
+    padding: 1rem 1.15rem;
+    background: #fffbe8;
+    border: 1px solid #e6d9a8;
+    border-left: 3px solid #b9962e;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: #4a3f1c;
+  }
+  .howto strong { font-weight: 600; }
+  .howto ol { margin: 0.5rem 0 0 1.2rem; }
+  .howto code {
+    font-family: Consolas, "Courier New", monospace;
+    background: #f3ecd2;
+    padding: 0.05rem 0.3rem;
+    border-radius: 2px;
+  }
+
+  /* ---------- 抬头 ---------- */
+  .cv-head { border-bottom: 1.5px solid var(--accent); padding-bottom: 0.75rem; }
+
+  h1 {
+    font-size: 19pt;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+  }
+  h1 .en {
+    font-weight: 400;
+    color: var(--ink-2);
+    font-size: 0.55em;
+    letter-spacing: 0.03em;
+    margin-left: 0.5em;
+    white-space: nowrap;
+  }
+
+  .cv-affil { margin-top: 0.4rem; font-size: 10.5pt; color: var(--ink-2); }
+
+  .cv-contact {
+    margin-top: 0.5rem;
+    font-size: 9.5pt;
+    color: var(--ink-2);
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem 1.1rem;
+  }
+  .cv-contact a { color: var(--accent); text-decoration: none; }
+
+  /* ---------- 版块 ---------- */
+  section { margin-top: 1.5rem; break-inside: avoid; }
+
+  h2 {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: 0.2rem;
+    border-bottom: 0.5px solid var(--hairline);
+    margin-bottom: 0.65rem;
+  }
+
+  ul.items { list-style: none; font-size: 10pt; }
+  ul.items > li + li { margin-top: 0.7rem; }
+  ul.items > li { break-inside: avoid; }
+
+  .it-head { font-weight: 600; }
+  .it-en {
+    font-weight: 400;
+    color: var(--ink-3);
+    font-size: 0.86em;
+    letter-spacing: 0.01em;
+  }
+  .it-sub {
+    display: block;
+    color: var(--ink-2);
+    font-size: 9.5pt;
+    font-variant-numeric: tabular-nums;
+  }
+  .it-body {
+    display: block;
+    margin-top: 0.1rem;
+    color: var(--ink-2);
+    font-size: 9.5pt;
+  }
+
+  .note { margin-top: 0.9rem; font-size: 9.5pt; color: var(--ink-2); }
+
+  /* 论文与科研项目。这两个版块默认是注释掉的，样式先放在这里，
+     启用时不必再回来补 CSS。 */
+  .pub .it-head { display: block; }
+  .pub .me { font-weight: 700; color: var(--ink); }
+  .pub .status {
+    display: inline-block;
+    margin-left: 0.35em;
+    padding: 0 0.35em;
+    font-size: 0.85em;
+    font-weight: 500;
+    color: var(--accent);
+    border: 0.5px solid var(--accent);
+    border-radius: 2px;
+  }
+
+  .summary { font-size: 10pt; color: var(--ink-2); }
+  .summary strong { font-weight: 600; color: var(--ink); }
+  .summary p + p { margin-top: 0.5rem; }
+
+  .cv-foot {
+    margin-top: 1.75rem;
+    padding-top: 0.55rem;
+    border-top: 0.5px solid var(--hairline);
+    font-size: 8.5pt;
+    color: var(--ink-3);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .cv-foot a { color: var(--ink-3); }
+
+  /* ---------- 窄屏：A4 固定宽度会溢出，改成自适应 ---------- */
+  @media (max-width: 230mm) {
+    .paper { width: auto; min-height: 0; margin: 1rem; padding: 1.5rem 1.25rem; }
+    .howto { margin: 1rem; }
+  }
+
+  /* ---------- 打印 ---------- */
+  @page { size: A4; margin: 18mm 16mm; }
+
+  @media print {
+    body { background: #fff; }
+    .howto { display: none !important; }
+    .paper {
+      width: auto;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+    /* 打印时把外链目标显出来，否则纸上是死链 */
+    a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: 7.5pt;
+      color: #666;
+      word-break: break-all;
+    }
+    /* 邮箱与 ORCID 本身就是可读文本，不必重复 */
+    .cv-contact a[href^="http"]::after,
+    a[href^="mailto"]::after { content: ""; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="howto">
+  <strong>这一页是 cv.pdf 的排版源文件，不是最终成品。</strong>导出步骤：
+  <ol>
+    <li>先把占位符填掉（跑 <code>fill.ps1</code> 会连同 <code>index.html</code> 一起填）。</li>
+    <li>在浏览器里按 <code>Ctrl+P</code>。</li>
+    <li>目标选「<strong>另存为 PDF</strong>」，纸张 <strong>A4</strong>，边距选「<strong>默认</strong>」，
+        缩放 <strong>100%</strong>，并<strong>关掉「页眉和页脚」</strong>——否则纸上会印出浏览器加的网址和日期。</li>
+    <li>存到仓库根目录，文件名固定为 <code>cv.pdf</code>。</li>
+    <li>回到 <code>index.html</code>，取消 CV 链接那行的注释，把日期改成当月。</li>
+  </ol>
+  这段说明只在屏幕上显示，打印时会自动隐藏。
+</aside>
+
+<div class="paper">
+
+  <header class="cv-head">
+    <h1>{{需你填写:姓名}}<span class="en">{{需你填写:姓名英文拼写}}</span></h1>
+    <p class="cv-affil">{{需你填写:现单位与院系}} · {{需你填写:当前身份}}</p>
+    <ul class="cv-contact">
+      <li><a href="mailto:{{需你填写:邮箱}}">{{需你填写:邮箱}}</a></li>
+      <li><a href="https://cosine753.github.io/">cosine753.github.io</a></li>
+      <li><a href="https://github.com/Cosine753">github.com/Cosine753</a></li>
+      <!-- 有 ORCID 后取消下一行注释；fill.ps1 会根据 myinfo.txt 自动处理 -->
+      <!-- <li><a href="https://orcid.org/{{需你填写:ORCID}}">ORCID {{需你填写:ORCID}}</a></li> -->
+    </ul>
+  </header>
+
+  <section>
+    <h2>研究方向陈述</h2>
+    <div class="summary">
+      <p>我关心的是同一个问题的不同侧面：<strong>一项临床主张，能不能被它所依赖的记录支撑？</strong></p>
+      <p>在眼科，许多关键环节的处置动作早已写进各国筛查方案与行业规范，却几乎从未被记录下来，因而也从未被评估过。类似的情形出现在临床试验的注册信息里，出现在公开数据集的参考标准里，也出现在被反复引用却无人回到原文核对的数字里。我的工作是把这些「说了但没留痕」的地方找出来，判断现有记录到底能支撑到哪一步，并为补上缺口设计可执行的记录与审计方案。</p>
+      <p>方法上坚持两条：每一个被引用的数字都要打开原始来源确认，核不到就写「未核实」；把核验优先对准自己的结论——如果证据推翻了我自己的论点，就照实改写并记录改了什么。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>教育经历</h2>
+    <ul class="items">
+      <li>
+        <span class="it-head">{{需你填写:学位一学校院系与专业学位}}</span>
+        <span class="it-sub">{{需你填写:学位一起止年份与补充说明}}</span>
+      </li>
+      <li>
+        <span class="it-head">{{需你填写:学位二学校院系与专业学位}}</span>
+        <span class="it-sub">{{需你填写:学位二起止年份与补充说明}}</span>
+      </li>
+    </ul>
+    <!-- 只有一个学位就删掉上面第二个 <li>；myinfo.txt 里学位二留空的话 fill.ps1 会自动删 -->
+    <p class="note">{{需你填写:如有临床或工作经历请在此说明否则删除本段}}</p>
+  </section>
+
+  <!-- ==================================================================
+       「论文」与「科研项目」占位版块 —— 默认不展示，与 index.html 保持一致。
+
+       启用方法：删掉本段开头那行的注释起始标记，和本段末尾那行的注释结束标记。
+       （注释里不能出现字面的结束标记，写上去会让注释提前结束、把模板变成真内容，
+         所以这里只能用文字描述。）
+
+       CV 里通常把论文和项目排在教育经历之后、研究兴趣之前 —— 先给硬证据，
+       再谈方向。这两块就放在这个位置。
+
+       要加第二条就把整个 <li> 复制一份，字段名改成「论文二…」「项目二…」。
+
+       两条不要越过的线（与 index.html 里写的相同，这里再说一遍是因为
+       cv.pdf 往往会被单独转发出去，脱离主页的语境）：
+         · 状态要写实：已发表 / 在审 / 稿件准备中，不要含糊，更不要往上够。
+         · 未投稿论文不要放头条结论。写问题、方法、做到什么程度是安全的。
+
+       科研项目要写清楚你实际承担的具体工作，不要只写「参与」。
+       ==================================================================
+
+  <section>
+    <h2>论文</h2>
+    <ul class="items pub">
+      <li>
+        <span class="it-body">{{需你填写:论文一作者列表}}</span>
+        <span class="it-head">{{需你填写:论文一标题}}</span>
+        <span class="it-sub">{{需你填写:论文一发表信息}}</span>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>科研项目</h2>
+    <ul class="items pub">
+      <li>
+        <span class="it-head">{{需你填写:项目一名称}}</span>
+        <span class="it-sub">{{需你填写:项目一来源编号与起止年份}}</span>
+        <span class="it-body">{{需你填写:项目一你承担的具体工作}}</span>
+      </li>
+    </ul>
+  </section>
+
+       ============ 论文 / 科研项目 占位版块结束 ============ -->
+
+  <section>
+    <h2>研究兴趣</h2>
+    <ul class="items">
+      <li>
+        <span class="it-head">眼科影像采集质量与失败记录
+          <span class="it-en">Capture quality &amp; reject/repeat analysis</span></span>
+        <span class="it-body">眼底照相在真实筛查中的采集失败及其后续处置（重拍、改换方案、人工复核、转诊）；借鉴放射学成熟的废片—重拍分析方法学，研究如何建立可审计的采集事件记录与原因编码。</span>
+      </li>
+      <li>
+        <span class="it-head">临床证据的可核验性与可复现性
+          <span class="it-en">Verifiability &amp; reproducibility of clinical evidence</span></span>
+        <span class="it-body">一项研究的公开记录，能否让外部研究者复原它、检验它、并判断它的结论能支撑到哪一级主张；以及如何用预先锁定的方案、可重跑的流水线和数值溯源机制，让这种检验成为常规而非例外。</span>
+      </li>
+      <li>
+        <span class="it-head">公开眼科数据集的参考标准可靠性
+          <span class="it-en">Reference-standard reliability in public datasets</span></span>
+        <span class="it-body">公开数据集的标注一致性、分析单位与患者级泄漏风险；把「参考标准存在不确定性」这句免责声明，变成可以逐项测量的量。</span>
+      </li>
+      <li>
+        <span class="it-head">医学影像互操作标准与记录规范
+          <span class="it-en">Imaging interoperability &amp; documentation standards</span></span>
+        <span class="it-body">DICOM 眼科摄影相关模块与 IHE 技术框架在表达「为什么重拍」上的结构性空白，以及面向基层非 DICOM 工作站的可行记录路径。</span>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>方法与技能</h2>
+    <ul class="items">
+      <li>
+        <span class="it-head">证据核验与文献计量</span>
+        <span class="it-body">以原始来源为准的结构化证据综述；Europe PMC REST、PubMed E-utilities、arXiv、Crossref、OpenAlex 等一手 API 检索；把文献空白写成可重跑的检索式并附命中数与执行日期，使之可被证伪。</span>
+      </li>
+      <li>
+        <span class="it-head">临床审计与研究设计</span>
+        <span class="it-body">可行性预检门、事前锁定的分析方案与判定阈值、指标口径的单一权威定义；分析单位（图像／眼／患者／筛查次）与判定主体的严格区分；报告规范选择（STROBE、SQUIRE 2.0）。</span>
+      </li>
+      <li>
+        <span class="it-head">统计与数据分析</span>
+        <span class="it-body">Python（pandas／numpy／matplotlib）；Wilson 与 Clopper–Pearson 区间、样本量估算、聚类稳健方差、ICC 与设计效应、Logistic 回归、信度与量表结构诊断（KR-20／α、Loevinger H、主成分）。</span>
+      </li>
+      <li>
+        <span class="it-head">可复现工程</span>
+        <span class="it-body">数据锁与 SHA-256 指纹；一条命令端到端重建的分析流水线；把稿件中的每个数字解析回锁定原始数据的数值溯源门；以合成数据双向验证判定逻辑（正常数据与退化数据须落到相反结论）。</span>
+      </li>
+      <li>
+        <span class="it-head">标准与法规文本分析</span>
+        <span class="it-body">DICOM PS3.3／PS3.16 与 IHE 技术框架；AAPM 废片分析方法学；国内医疗器械注册审查指导原则与学会规范；中国临床研究伦理框架下的去标识化与知情同意豁免论证。</span>
+      </li>
+      <li>
+        <span class="it-head">工具与语言</span>
+        <span class="it-body">Python、PowerShell、Git；中英文科技写作与术语校订；零外部依赖的静态网页开发（含无障碍与可打印排版）。</span>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>公开工具</h2>
+    <ul class="items">
+      <li>
+        <span class="it-head">儿童近视与干眼共病问卷风险分层计算器</span>
+        <span class="it-sub">MIT 许可 · v1.0.0 ·
+          <a href="https://cosine753.github.io/myopia-risk-calculator/">在线访问</a> ·
+          <a href="https://github.com/Cosine753/myopia-risk-calculator">源码</a></span>
+        <span class="it-body">锁定两阶段 Logistic 模型的浏览器演示版，全部计算在本地完成，无后端、无外部依赖、不写入浏览器存储。研究演示用途，不是诊断工具。</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ==================================================================
+       「研究工作」版块与首页保持一致：默认不展示。
+
+       注意 cv.pdf 会放在仓库根目录、可被任何人下载，公开程度与首页相同——
+       所以这里的默认值和 index.html 保持一致是有意为之，不是遗漏。
+
+       如果你要做的是**发给特定单位的非公开版 CV**，那么在投递前把下面这段
+       注释标记删掉是合适的：未投稿稿件在 CV 里按「稿件准备中」列出是常规做法。
+       但那一版导出后请另存为别的文件名（例如 cv-full.pdf）并且**不要提交进仓库**，
+       否则它同样会被公开。
+       ==================================================================
+
+  <section>
+    <h2>研究工作</h2>
+    <ul class="items">
+      <li>
+        <span class="it-head">眼底采集失败的记录缺口与废片分析框架</span>
+        <span class="it-sub">稿件准备中（未投稿）</span>
+        <span class="it-body">论点是采集失败的证据被三重机制系统性销毁：规范要求删除不合格图像、DICOM 中一切能说明「为什么重拍」的字段均可合法留空、公开数据集在整理阶段丢弃重拍。配套提出一份面向 IHE 废片分析与监测（RAM）的眼科附录草案，含两级原因编码与一致性声明模板。</span>
+      </li>
+      <li>
+        <span class="it-head">注册试验的终点可恢复性</span>
+        <span class="it-sub">稿件准备中（未投稿）</span>
+        <span class="it-body">问：给定一项已注册的试验设计，它最高能支撑到哪一级临床主张。分析方案与分类词表在取数之前即已锁定并写入哈希，且预先写明了「什么情况算工具失败」。</span>
+      </li>
+      <li>
+        <span class="it-head">视网膜试验的公开证据轨迹审计</span>
+        <span class="it-sub">稿件准备中（未投稿）</span>
+        <span class="it-body">问：试验结束、终止或撤回之后，外部研究者仅凭公开注册信息能复原多少。同时检验这类审计本身能测量什么、不能测量什么。</span>
+      </li>
+      <li>
+        <span class="it-head">眼科临床痛点与公开数据集调研</span>
+        <span class="it-sub">内部报告，未投稿</span>
+        <span class="it-body">从可获得的公开数据反向识别临床问题，逐条标注证据等级；对多个公开数据集做了字节级复核，并把参考标准的不确定性量化为可测量的指标。</span>
+      </li>
+    </ul>
+  </section>
+
+       ================== 暂不展示版块结束 ================== -->
+
+  <footer class="cv-foot">
+    <span>{{需你填写:姓名}} · 学术简历</span>
+    <span>更新于 <span class="cv-date">2026-07</span> · <a href="https://cosine753.github.io/">cosine753.github.io</a></span>
+  </footer>
+
+</div>
+
+</body>
+</html>
