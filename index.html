@@ -3,52 +3,494 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ⚠️ 页面填写完成前，保留下面这行，避免半成品被搜索引擎收录。
+     所有占位符（形如 双花括号 + 需你填写）替换完毕后，删掉这一行。
+     跑一次 check.ps1 就会告诉你还剩哪些没填。 -->
 <meta name="robots" content="noindex, nofollow">
-<title>个人学术主页 · 建设中</title>
-<meta name="description" content="个人学术主页,正在建设中。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230f5e63'/%3E%3C/svg%3E">
+
+<title>{{需你填写:姓名}} — 眼科临床研究 · 临床证据可核验性</title>
+<meta name="description" content="{{需你填写:姓名}}的个人学术主页。研究兴趣：眼科影像采集质量与记录规范、临床证据的可核验性与可复现性、公开眼科数据集的参考标准可靠性。">
+<link rel="canonical" href="https://cosine753.github.io/">
+
+<!-- 社交卡片：导师把链接贴进邮件或微信时显示的摘要 -->
+<meta property="og:type" content="profile">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:url" content="https://cosine753.github.io/">
+<meta property="og:title" content="{{需你填写:姓名}} — 眼科临床研究 · 临床证据可核验性">
+<meta property="og:description" content="研究兴趣：眼科影像采集质量与记录规范、临床证据的可核验性与可复现性、公开眼科数据集的参考标准可靠性。">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f5e63'/%3E%3Ccircle cx='16' cy='16' r='7.5' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23ffffff'/%3E%3C/svg%3E">
+
 <style>
+  /* ============ 设计变量 ============ */
   :root {
-    --ink: #1f2933;
-    --ink-2: #52606d;
-    --accent: #0f5e63;
-    --hairline: #e4e7eb;
-    --bg: #ffffff;
+    --ink:        #1a2429;   /* 正文 */
+    --ink-2:      #4a5761;   /* 次级文字 */
+    --ink-3:      #5d6b75;   /* 辅助信息 */
+    --accent:     #0f5e63;   /* 深青 */
+    --accent-dim: #a8c3c5;   /* 链接下划线 */
+    --hairline:   #e2e6e8;   /* 分隔线 */
+    --chip-bg:    #eef3f3;   /* 标签底色 */
+    --bg:         #ffffff;
+    --sel:        #d3e6e7;
+    --measure:    42rem;
   }
+
+  /* 暗色模式：跟随系统。对比度按 WCAG AA 校准过 */
   @media (prefers-color-scheme: dark) {
     :root {
-      --ink: #e5e9ec;
-      --ink-2: #a7b0b8;
-      --accent: #7fc4c9;
-      --hairline: #2b3339;
-      --bg: #14181b;
+      --ink:        #e6eaec;
+      --ink-2:      #aab5bd;
+      --ink-3:      #93a0a8;
+      --accent:     #7ec8cd;
+      --accent-dim: #4a7276;
+      --hairline:   #2a3237;
+      --chip-bg:    #1e262a;
+      --bg:         #14181b;
+      --sel:        #2c4a4d;
     }
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-                 "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑",
+                 "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
     font-size: 16px;
-    line-height: 1.8;
+    line-height: 1.85;
     color: var(--ink);
     background: var(--bg);
-    display: flex;
-    align-items: center;
-    min-height: 100vh;
+    overflow-wrap: break-word;
+    text-rendering: optimizeLegibility;
   }
-  .wrap { max-width: 34rem; margin: 0 auto; padding: 3rem 1.5rem; }
-  h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.02em; }
-  p { margin-top: 1rem; color: var(--ink-2); }
-  .rule { margin: 1.75rem 0; border: 0; border-top: 1px solid var(--hairline); }
-  .note { font-size: 0.85rem; }
+
+  .wrap {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-dim);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  a:hover { text-decoration-color: var(--accent); }
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection { background: var(--sel); }
+
+  /* 跳到主内容：键盘与读屏用户 */
+  .skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--bg);
+    color: var(--accent);
+    padding: 0.6rem 1rem;
+    z-index: 10;
+  }
+  .skip:focus {
+    left: 0;
+    outline: 2px solid var(--accent);
+  }
+
+  /* ============ 顶部 ============ */
+  header.site { padding: 4.5rem 0 3rem; }
+
+  h1 {
+    font-size: clamp(2rem, 5.5vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+  }
+  h1 .en {
+    display: inline-block;
+    font-weight: 400;
+    color: var(--ink-2);
+    font-size: 0.55em;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    margin-left: 0.45em;
+  }
+
+  .affiliation {
+    margin-top: 1rem;
+    color: var(--ink-2);
+    font-size: 1rem;
+  }
+
+  .contact {
+    margin-top: 1.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+    font-size: 0.92rem;
+    list-style: none;
+  }
+
+  .site-nav {
+    margin-top: 2.4rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--hairline);
+  }
+  .site-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.5rem;
+    list-style: none;
+    font-size: 0.9rem;
+  }
+  .site-nav a { color: var(--ink-2); text-decoration: none; }
+  .site-nav a:hover,
+  .site-nav a:focus-visible {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
+  }
+
+  /* ============ 版块 ============ */
+  main { padding-bottom: 2rem; }
+
+  section {
+    border-top: 1px solid var(--hairline);
+    padding: 2.75rem 0 3rem;
+    scroll-margin-top: 1.25rem;
+  }
+
+  .label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.45rem;
+  }
+
+  h2 {
+    font-size: 1.32rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  h3 { font-size: 1.02rem; font-weight: 600; letter-spacing: 0.02em; }
+
+  section p + p { margin-top: 1rem; }
+  .muted { color: var(--ink-2); }
+  .lead { font-size: 1.06rem; }
+  .lead strong { font-weight: 600; }
+
+  /* 研究兴趣 */
+  .research { list-style: none; }
+  .research li { padding-left: 1.3rem; position: relative; }
+  .research li + li { margin-top: 1.3rem; }
+  .research li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.78em;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.85;
+  }
+  .research strong { font-weight: 600; }
+  .research .en-term {
+    font-weight: 400;
+    color: var(--ink-3);
+    font-size: 0.85em;
+    letter-spacing: 0.01em;
+  }
+  .research .desc {
+    display: block;
+    color: var(--ink-2);
+    font-size: 0.95rem;
+  }
+
+  /* 方法与技能 */
+  .skills { list-style: none; }
+  .skills li + li { margin-top: 1.25rem; }
+  .skills .skill-head {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .skills .skill-body {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--ink-2);
+    font-size: 0.95rem;
+  }
+
+  /* 教育经历 */
+  .edu { list-style: none; }
+  .edu li + li { margin-top: 1.15rem; }
+  .edu .edu-degree { font-weight: 600; }
+  .edu .edu-detail {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .edu-note { margin-top: 1.4rem; font-size: 0.95rem; }
+
+  /* ============ 页脚 ============ */
+  footer.site {
+    border-top: 1px solid var(--hairline);
+    padding: 2rem 0 3.5rem;
+    font-size: 0.85rem;
+    color: var(--ink-3);
+  }
+  footer.site p + p { margin-top: 0.3rem; }
+
+  /* ============ 窄屏 ============ */
+  @media (max-width: 600px) {
+    header.site { padding: 3rem 0 2.25rem; }
+    h1 .en { display: block; margin: 0.4rem 0 0; }
+    .site-nav { margin-top: 1.85rem; }
+    section { padding: 2.25rem 0 2.5rem; }
+  }
+
+  /* ============ 打印：委员会会把页面打出来 ============ */
+  @media print {
+    :root {
+      --ink: #000; --ink-2: #333; --ink-3: #444;
+      --accent: #000; --hairline: #bbb; --bg: #fff;
+    }
+    body { font-size: 10.5pt; line-height: 1.55; }
+    .wrap { max-width: none; padding: 0; }
+    .site-nav, .skip { display: none; }
+    header.site { padding: 0 0 1rem; }
+    section { padding: 1rem 0 1.1rem; break-inside: avoid; }
+    h1 { font-size: 20pt; }
+    h2 { font-size: 12pt; margin-bottom: 0.7rem; }
+    a { text-decoration: none; }
+    /* 打印时把链接目标显出来，否则纸上是死链 */
+    main a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: 8.5pt;
+      color: #555;
+      word-break: break-all;
+    }
+    .todo { background: none; color: #000; border: 1px solid #000; }
+  }
 </style>
 </head>
 <body>
+
+<a class="skip" href="#main">跳到主要内容</a>
+
 <div class="wrap">
-  <h1>个人学术主页</h1>
-  <p>本页正在重建中,内容稍后更新。</p>
-  <hr class="rule">
-  <p class="note">研究方向:眼科临床研究 · 视网膜影像与临床数据质量 · 临床证据的可复现性审计</p>
+
+  <header class="site">
+    <h1>{{需你填写:姓名}}<span class="en">{{需你填写:姓名英文拼写}}</span></h1>
+    <p class="affiliation">{{需你填写:现单位与院系}}<br>{{需你填写:当前身份}}</p>
+    <nav aria-label="联系方式">
+      <ul class="contact">
+        <li><a href="mailto:{{需你填写:邮箱}}">{{需你填写:邮箱}}</a></li>
+        <li><a href="https://github.com/Cosine753" rel="me">GitHub</a></li>
+        <!-- 有 ORCID 后取消下一行注释并填入编号；没有可以先不放 -->
+        <!-- <li><a href="https://orcid.org/{{需你填写:ORCID}}" rel="me">ORCID</a></li> -->
+      </ul>
+    </nav>
+    <nav class="site-nav" aria-label="页内导航">
+      <ul>
+        <li><a href="#about">简介</a></li>
+        <li><a href="#research">研究兴趣</a></li>
+        <li><a href="#methods">方法与技能</a></li>
+        <li><a href="#education">教育经历</a></li>
+        <li><a href="#contact">联系</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <section id="about" aria-labelledby="about-h">
+      <span class="label" aria-hidden="true">About</span>
+      <h2 id="about-h">简介</h2>
+      <p class="lead">我关心的是同一个问题的不同侧面：<strong>一项临床主张，能不能被它所依赖的记录支撑？</strong></p>
+      <p>在眼科，许多关键环节的处置动作早已写进各国筛查方案与行业规范，却几乎从未被记录下来，因而也从未被评估过。类似的情形出现在临床试验的注册信息里，出现在公开数据集的参考标准里，也出现在被反复引用却无人回到原文核对的数字里。我的工作是把这些「说了但没留痕」的地方找出来，判断现有记录到底能支撑到哪一步，并为补上缺口设计可执行的记录与审计方案。</p>
+      <p class="muted">方法上我坚持两条：每一个被引用的数字都要打开原始来源确认，核不到就写「未核实」；以及，把核验优先对准自己的结论——如果证据推翻了我自己的论点，那就照实改写并记录改了什么。</p>
+    </section>
+
+    <section id="research" aria-labelledby="research-h">
+      <span class="label" aria-hidden="true">Research Interests</span>
+      <h2 id="research-h">研究兴趣</h2>
+      <ul class="research">
+        <li>
+          <strong>眼科影像采集质量与失败记录</strong>
+          <span class="en-term">Capture quality &amp; reject/repeat analysis</span>
+          <span class="desc">眼底照相在真实筛查中的采集失败及其后续处置（重拍、改换方案、人工复核、转诊）；借鉴放射学成熟的废片—重拍分析方法学，研究如何建立可审计的采集事件记录与原因编码。</span>
+        </li>
+        <li>
+          <strong>临床证据的可核验性与可复现性</strong>
+          <span class="en-term">Verifiability &amp; reproducibility of clinical evidence</span>
+          <span class="desc">一项研究的公开记录，能否让外部研究者复原它、检验它、并判断它的结论能支撑到哪一级主张；以及如何用预先锁定的方案、可重跑的流水线和数值溯源机制，让这种检验成为常规而非例外。</span>
+        </li>
+        <li>
+          <strong>公开眼科数据集的参考标准可靠性</strong>
+          <span class="en-term">Reference-standard reliability in public datasets</span>
+          <span class="desc">公开数据集的标注一致性、分析单位与患者级泄漏风险；把「参考标准存在不确定性」这句免责声明，变成可以逐项测量的量。</span>
+        </li>
+        <li>
+          <strong>医学影像互操作标准与记录规范</strong>
+          <span class="en-term">Imaging interoperability &amp; documentation standards</span>
+          <span class="desc">DICOM 眼科摄影相关模块与 IHE 技术框架在表达「为什么重拍」上的结构性空白，以及面向基层非 DICOM 工作站的可行记录路径。</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="methods" aria-labelledby="methods-h">
+      <span class="label" aria-hidden="true">Methods</span>
+      <h2 id="methods-h">方法与技能</h2>
+      <ul class="skills">
+        <li>
+          <span class="skill-head">证据核验与文献计量</span>
+          <span class="skill-body">以原始来源为准的结构化证据综述；Europe PMC REST、PubMed E-utilities、arXiv、Crossref、OpenAlex 等一手 API 检索；把文献空白写成可重跑的检索式并附命中数与执行日期，使之可被证伪。</span>
+        </li>
+        <li>
+          <span class="skill-head">临床审计与研究设计</span>
+          <span class="skill-body">可行性预检门、事前锁定的分析方案与判定阈值、指标口径的单一权威定义；分析单位（图像／眼／患者／筛查次）与判定主体的严格区分；报告规范选择（STROBE、SQUIRE 2.0）。</span>
+        </li>
+        <li>
+          <span class="skill-head">统计与数据分析</span>
+          <span class="skill-body">Python（pandas／numpy／matplotlib）；Wilson 与 Clopper–Pearson 区间、样本量估算、聚类稳健方差、ICC 与设计效应、Logistic 回归、信度与量表结构诊断（KR-20／α、Loevinger H、主成分）。</span>
+        </li>
+        <li>
+          <span class="skill-head">可复现工程</span>
+          <span class="skill-body">数据锁与 SHA-256 指纹；一条命令端到端重建的分析流水线；把稿件中的每个数字解析回锁定原始数据的数值溯源门；以合成数据双向验证判定逻辑（正常数据与退化数据须落到相反结论）。</span>
+        </li>
+        <li>
+          <span class="skill-head">标准与法规文本分析</span>
+          <span class="skill-body">DICOM PS3.3／PS3.16 与 IHE 技术框架；AAPM 废片分析方法学；国内医疗器械注册审查指导原则与学会规范；中国临床研究伦理框架下的去标识化与知情同意豁免论证。</span>
+        </li>
+        <li>
+          <span class="skill-head">工具与语言</span>
+          <span class="skill-body">Python、PowerShell、Git；中英文科技写作与术语校订；零外部依赖的静态网页开发（含无障碍与可打印排版）。</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="education" aria-labelledby="edu-h">
+      <span class="label" aria-hidden="true">Education</span>
+      <h2 id="edu-h">教育经历</h2>
+      <ul class="edu">
+        <li>
+          <span class="edu-degree">{{需你填写:学位一学校院系与专业学位}}</span>
+          <span class="edu-detail">{{需你填写:学位一起止年份与补充说明}}</span>
+        </li>
+        <li>
+          <span class="edu-degree">{{需你填写:学位二学校院系与专业学位}}</span>
+          <span class="edu-detail">{{需你填写:学位二起止年份与补充说明}}</span>
+        </li>
+      </ul>
+      <!-- 只有一个学位就删掉上面第二个 <li>；有工作经历可在此另起一个版块 -->
+      <p class="muted edu-note">{{需你填写:如有临床或工作经历请在此说明否则删除本段}}</p>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-h">
+      <span class="label" aria-hidden="true">Contact</span>
+      <h2 id="contact-h">联系</h2>
+      <p>欢迎就上述方向交流。邮件：<a href="mailto:{{需你填写:邮箱}}">{{需你填写:邮箱}}</a></p>
+      <p class="muted">代码与公开产出见 <a href="https://github.com/Cosine753" rel="me">GitHub</a>。</p>
+    </section>
+
+    <!-- ==================================================================
+         以下版块已写好但暂不展示（你说了论文和在做的都先不放）。
+         想启用时：把该版块前后的注释标记删掉，并在上面 .site-nav 里
+         补一个对应的 <li><a href="#works">研究工作</a></li>。
+         启用前请先确认：未投稿论文的头条结论仍建议不要放上来。
+         ==================================================================
+
+    <section id="works" aria-labelledby="works-h">
+      <span class="label" aria-hidden="true">Work</span>
+      <h2 id="works-h">研究工作</h2>
+      <ul class="research">
+        <li>
+          <strong>眼底采集失败的记录缺口与废片分析框架</strong>
+          <span class="desc">稿件准备中（未投稿）。论点是采集失败的证据被三重机制系统性销毁：规范要求删除不合格图像、DICOM 中一切能说明「为什么重拍」的字段均可合法留空、公开数据集在整理阶段丢弃重拍。配套提出一份面向 IHE 废片分析与监测（RAM）的眼科附录草案，含两级原因编码与一致性声明模板。</span>
+        </li>
+        <li>
+          <strong>注册试验的终点可恢复性</strong>
+          <span class="desc">稿件准备中（未投稿）。问：给定一项已注册的试验设计，它最高能支撑到哪一级临床主张。分析方案与分类词表在取数之前即已锁定并写入哈希，且预先写明了「什么情况算工具失败」。</span>
+        </li>
+        <li>
+          <strong>视网膜试验的公开证据轨迹审计</strong>
+          <span class="desc">稿件准备中（未投稿）。问：试验结束、终止或撤回之后，外部研究者仅凭公开注册信息能复原多少。同时检验这类审计本身能测量什么、不能测量什么。</span>
+        </li>
+        <li>
+          <strong>眼科临床痛点与公开数据集调研</strong>
+          <span class="desc">内部报告，未投稿。从可获得的公开数据反向识别临床问题，逐条标注证据等级；对多个公开数据集做了字节级复核，并把参考标准的不确定性量化为可测量的指标。</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="tools" aria-labelledby="tools-h">
+      <span class="label" aria-hidden="true">Tools</span>
+      <h2 id="tools-h">公开工具</h2>
+      <ul class="research">
+        <li>
+          <strong>儿童近视与干眼共病问卷风险分层计算器</strong>
+          <span class="desc">
+            <a href="https://cosine753.github.io/myopia-risk-calculator/">在线访问</a> ·
+            MIT 许可 · 版本 v1.0.0。锁定两阶段 Logistic 模型的浏览器演示版，全部计算在本地完成，
+            无后端、无外部依赖、不写入浏览器存储。研究演示用途，不是诊断工具。
+          </span>
+        </li>
+      </ul>
+    </section>
+
+         ================== 暂不展示版块结束 ================== -->
+
+  </main>
+
+  <footer class="site">
+    <p>© 2026 {{需你填写:姓名}}</p>
+    <p>本页为纯静态页面，无跟踪脚本、无外部依赖。</p>
+  </footer>
+
 </div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{需你填写:姓名}}",
+  "alternateName": "{{需你填写:姓名英文拼写}}",
+  "url": "https://cosine753.github.io/",
+  "email": "mailto:{{需你填写:邮箱}}",
+  "affiliation": { "@type": "Organization", "name": "{{需你填写:现单位与院系}}" },
+  "knowsAbout": [
+    "眼科影像采集质量",
+    "废片与重拍分析",
+    "临床证据可复现性",
+    "公开眼科数据集参考标准",
+    "DICOM 与 IHE 医学影像互操作标准"
+  ],
+  "sameAs": ["https://github.com/Cosine753"]
+}
+</script>
+
 </body>
 </html>
