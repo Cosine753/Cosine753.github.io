@@ -101,7 +101,7 @@
   .cv-contact a { color: var(--accent); text-decoration: none; }
 
   /* ---------- 版块 ---------- */
-  section { margin-top: 1.5rem; break-inside: avoid; }
+  section { margin-top: 1.5rem; }
 
   h2 {
     font-size: 9pt;
@@ -190,6 +190,8 @@
       padding: 0;
       box-shadow: none;
     }
+    h2 { break-after: avoid; }
+    ul.items > li { break-inside: avoid; }
     /* 打印时把外链目标显出来，否则纸上是死链 */
     a[href^="http"]::after {
       content: " (" attr(href) ")";
@@ -233,15 +235,6 @@
   </header>
 
   <section>
-    <h2>研究方向陈述</h2>
-    <div class="summary">
-      <p>我关心的是同一个问题的不同侧面：<strong>一项临床主张，能不能被它所依赖的记录支撑？</strong></p>
-      <p>在眼科，许多关键环节的处置动作早已写进各国筛查方案与行业规范，却几乎从未被记录下来，因而也从未被评估过。类似的情形出现在临床试验的注册信息里，出现在公开数据集的参考标准里，也出现在被反复引用却无人回到原文核对的数字里。我的工作是把这些「说了但没留痕」的地方找出来，判断现有记录到底能支撑到哪一步，并为补上缺口设计可执行的记录与审计方案。</p>
-      <p>方法上坚持两条：每一个被引用的数字都要打开原始来源确认，核不到就写「未核实」；把核验优先对准自己的结论——如果证据推翻了我自己的论点，就照实改写并记录改了什么。</p>
-    </div>
-  </section>
-
-  <section>
     <h2>教育经历</h2>
     <ul class="items">
       <li>
@@ -255,6 +248,29 @@
     </ul>
     <!-- 只有一个学位就删掉上面第二个 <li>；myinfo.txt 里学位二留空的话 fill.ps1 会自动删 -->
     <p class="note">{{需你填写:如有临床或工作经历请在此说明否则删除本段}}</p>
+  </section>
+
+  <section>
+    <h2>研究概况</h2>
+    <div class="summary">
+      <p>我关注眼科临床研究中的一条核心问题：<strong>一项主张，能否被它所依赖的记录完整支撑？</strong></p>
+      <p>目前从可核验的公开实现出发，学习把模型参数、判定阈值、版本与证据边界写清楚；博士阶段希望进一步研究眼科影像采集质量、公开数据集参考标准与临床证据可复现性。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>代表工作</h2>
+    <ul class="items">
+      <li>
+        <span class="it-head">儿童近视与干眼共病问卷风险分层计算器</span>
+        <span class="it-sub">Completed · v1.0.0 · MIT ·
+          <a href="https://cosine753.github.io/myopia-risk-calculator/">在线演示</a> ·
+          <a href="https://github.com/Cosine753/myopia-risk-calculator">源码与核验说明</a></span>
+        <span class="it-body">将锁定的两阶段 Logistic 路径转化为 15 项问卷的纯浏览器实现，固定模型参数、判定阈值与发布版本。</span>
+        <span class="it-body"><strong>一致性证据：</strong>在 201 例机构留出记录上，公开实现与锁定归档输出的风险分层 0 例不一致。</span>
+        <span class="it-body"><strong>证据边界：</strong>这只证明实现忠实复现锁定模型，不代表外部或前瞻性验证，也不作为诊断工具。</span>
+      </li>
+    </ul>
   </section>
 
   <!-- ==================================================================
@@ -307,22 +323,22 @@
       <li>
         <span class="it-head">眼科影像采集质量与失败记录
           <span class="it-en">Capture quality &amp; reject/repeat analysis</span></span>
-        <span class="it-body">眼底照相在真实筛查中的采集失败及其后续处置（重拍、改换方案、人工复核、转诊）；借鉴放射学成熟的废片—重拍分析方法学，研究如何建立可审计的采集事件记录与原因编码。</span>
+        <span class="it-body">眼底影像采集失败与重拍原因，怎样被完整、结构化地记录；那些没有进入最终数据集的失败，又会怎样改变质量判断。</span>
       </li>
       <li>
         <span class="it-head">临床证据的可核验性与可复现性
           <span class="it-en">Verifiability &amp; reproducibility of clinical evidence</span></span>
-        <span class="it-body">一项研究的公开记录，能否让外部研究者复原它、检验它、并判断它的结论能支撑到哪一级主张；以及如何用预先锁定的方案、可重跑的流水线和数值溯源机制，让这种检验成为常规而非例外。</span>
+        <span class="it-body">一项研究的公开记录，能否让外部研究者复原关键步骤，并判断结论在哪一步获得支持、在哪一步失去证据。</span>
       </li>
       <li>
         <span class="it-head">公开眼科数据集的参考标准可靠性
           <span class="it-en">Reference-standard reliability in public datasets</span></span>
-        <span class="it-body">公开数据集的标注一致性、分析单位与患者级泄漏风险；把「参考标准存在不确定性」这句免责声明，变成可以逐项测量的量。</span>
+        <span class="it-body">标注一致性、分析单位与患者级数据划分不清时，公开数据集的性能结论还能可信到什么程度。</span>
       </li>
       <li>
         <span class="it-head">医学影像互操作标准与记录规范
           <span class="it-en">Imaging interoperability &amp; documentation standards</span></span>
-        <span class="it-body">DICOM 眼科摄影相关模块与 IHE 技术框架在表达「为什么重拍」上的结构性空白，以及面向基层非 DICOM 工作站的可行记录路径。</span>
+        <span class="it-body">关注 DICOM / IHE 对采集失败、重拍原因与后续处置的表达能力，以及面向基层流程的可行记录路径。</span>
       </li>
     </ul>
   </section>
@@ -331,41 +347,29 @@
     <h2>方法与技能</h2>
     <ul class="items">
       <li>
-        <span class="it-head">证据核验与文献计量</span>
-        <span class="it-body">以原始来源为准的结构化证据综述；Europe PMC REST、PubMed E-utilities、arXiv、Crossref、OpenAlex 等一手 API 检索；把文献空白写成可重跑的检索式并附命中数与执行日期，使之可被证伪。</span>
+        <span class="it-head">可复现实现与版本固定</span>
+        <span class="it-sub">已有公开作品</span>
+        <span class="it-body">浏览器端模型实现、参数与阈值固定、版本标记、输出一致性核验，以及本地计算和隐私边界设计。</span>
+      </li>
+      <li>
+        <span class="it-head">证据核验与来源追踪</span>
+        <span class="it-sub">正在深化</span>
+        <span class="it-body">从原始来源复核关键数字、保存检索条件与执行日期，并明确「已核实」「未核实」和证据边界。</span>
       </li>
       <li>
         <span class="it-head">临床审计与研究设计</span>
-        <span class="it-body">可行性预检门、事前锁定的分析方案与判定阈值、指标口径的单一权威定义；分析单位（图像／眼／患者／筛查次）与判定主体的严格区分；报告规范选择（STROBE、SQUIRE 2.0）。</span>
+        <span class="it-sub">正在深化</span>
+        <span class="it-body">学习区分图像、眼、患者与筛查次等分析单位，并在结果出现前定义研究问题、失败条件与判定规则。</span>
       </li>
       <li>
         <span class="it-head">统计与数据分析</span>
-        <span class="it-body">Python（pandas／numpy／matplotlib）；Wilson 与 Clopper–Pearson 区间、样本量估算、聚类稳健方差、ICC 与设计效应、Logistic 回归、信度与量表结构诊断（KR-20／α、Loevinger H、主成分）。</span>
+        <span class="it-sub">正在深化</span>
+        <span class="it-body">围绕风险分层、诊断准确性、重复测量与不确定性表达，建立与临床问题相匹配的统计分析基础。</span>
       </li>
       <li>
-        <span class="it-head">可复现工程</span>
-        <span class="it-body">数据锁与 SHA-256 指纹；一条命令端到端重建的分析流水线；把稿件中的每个数字解析回锁定原始数据的数值溯源门；以合成数据双向验证判定逻辑（正常数据与退化数据须落到相反结论）。</span>
-      </li>
-      <li>
-        <span class="it-head">标准与法规文本分析</span>
-        <span class="it-body">DICOM PS3.3／PS3.16 与 IHE 技术框架；AAPM 废片分析方法学；国内医疗器械注册审查指导原则与学会规范；中国临床研究伦理框架下的去标识化与知情同意豁免论证。</span>
-      </li>
-      <li>
-        <span class="it-head">工具与语言</span>
-        <span class="it-body">Python、PowerShell、Git；中英文科技写作与术语校订；零外部依赖的静态网页开发（含无障碍与可打印排版）。</span>
-      </li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>公开工具</h2>
-    <ul class="items">
-      <li>
-        <span class="it-head">儿童近视与干眼共病问卷风险分层计算器</span>
-        <span class="it-sub">MIT 许可 · v1.0.0 ·
-          <a href="https://cosine753.github.io/myopia-risk-calculator/">在线访问</a> ·
-          <a href="https://github.com/Cosine753/myopia-risk-calculator">源码</a></span>
-        <span class="it-body">锁定两阶段 Logistic 模型的浏览器演示版，全部计算在本地完成，无后端、无外部依赖、不写入浏览器存储。研究演示用途，不是诊断工具。</span>
+        <span class="it-head">医学影像标准与记录规范</span>
+        <span class="it-sub">正在深化</span>
+        <span class="it-body">关注 DICOM / IHE 对采集失败、重拍原因与处置事件的表达能力，以及基层流程可落地的最小记录方案。</span>
       </li>
     </ul>
   </section>

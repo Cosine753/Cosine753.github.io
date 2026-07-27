@@ -192,6 +192,24 @@ if ($hits.Count -gt 0) {
     Write-Ok "无虚构内容残留"
 }
 
+# ORCID 是选填项；留空时 fill.ps1 应删除整条 URL，不能留下无效的根地址。
+$bareOrcid = @()
+foreach ($name in ($docs.Keys | Sort-Object)) {
+    $d = $docs[$name]
+    foreach ($m in [regex]::Matches($d.Text, '(?i)https://orcid\.org/(?:["''<\s]|$)')) {
+        if (Test-InComment $d.Comments $m.Index) { continue }
+        $bareOrcid += [pscustomobject]@{
+            File = $name
+            Line = (Get-LineNo $d.Text $m.Index)
+        }
+    }
+}
+if ($bareOrcid.Count -gt 0) {
+    Write-Bad "发现没有 ORCID 编号的无效链接："
+    $bareOrcid | ForEach-Object { Write-Host ("        {0}:{1}  https://orcid.org/" -f $_.File, $_.Line) }
+    $blocking++
+}
+
 # ============================================================================
 #  E. 页内锚点
 # ============================================================================

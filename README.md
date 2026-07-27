@@ -1,6 +1,6 @@
 # 个人学术主页
 
-面向 PhD 申请（中国大陆申请-考核制）的单页学术主页，外加一份同源的 CV。
+面向 PhD 申请与研究介绍的单页学术主页，外加一份同源的 CV。
 纯静态、零外部依赖——无 CDN、无 Google Fonts、无跟踪脚本，中国大陆网络环境下可完整加载。
 
 - 线上地址：<https://cosine753.github.io/>
@@ -19,17 +19,18 @@ powershell -ExecutionPolicy Bypass -File fill.ps1
 
 三步：
 
-1. 用编辑器打开 **`myinfo.txt`**，把 11 个字段填上（选填的可以留空）
-2. 跑 `fill.ps1` —— `index.html` 和 `cv.html` 里 **37 处**占位符会一次性替换掉
-3. 跑 `check.ps1` 自检，通过后 `git push`
+1. 用编辑器打开 **`myinfo.txt`**，把个人信息字段填上（选填的可以留空）
+2. 跑 `fill.ps1` —— `index.html` 和 `cv.html` 里的个人信息占位符会一次性替换掉
+3. 预览并导出 `cv.pdf`，确认无误后跑 `fill.ps1 -GoLive`，再用 `check.ps1` 做发布前自检
 
 不建议手工去改 HTML。除了替换占位符，`fill.ps1` 还顺手做了几件容易漏的事：
 
 - 选填项留空时，把页面上对应的整块删掉，不留空标题、空行和已经失效的说明注释
 - ORCID 填了就自动取消注释启用，留空就把那两行整个删掉
-- 重新生成带姓名的 `og.png`，并刷新 `sitemap.xml` 的 `lastmod`、CV 页脚的更新月份
+- 重新生成带姓名的 `og.png`，并刷新 `sitemap.xml` 的 `lastmod`、主页与 CV 页脚的更新月份
 
-动手前每个被改的文件都会存一份 `.bak`。反悔就把 `.bak` 改回原名，或者 `git checkout .`。
+动手前每个被改的文件都会存一份 `.bak`。需要回退时，优先用对应的 `.bak` 恢复单个文件；
+若用 Git，请先看 `git diff`，再只恢复确认过的目标文件，避免覆盖仓库里其他尚未提交的修改。
 
 ---
 
@@ -37,14 +38,15 @@ powershell -ExecutionPolicy Bypass -File fill.ps1
 
 | 文件 | 说明 |
 |---|---|
-| `index.html` | 主页。全部内容与样式都在这一个文件里 |
+| `index.html` | 主页内容与结构 |
+| `assets/site.css` | 主页与 404 页共用的视觉样式、响应式和打印规则 |
 | `cv.html` | **CV 的排版源文件**，A4 打印版式。用来导出 `cv.pdf`，见下文 |
 | `404.html` | 404 页面，GitHub Pages 自动使用 |
 | `myinfo.txt` | **你要填的就是这个文件**。已加入 `.gitignore`，不会被提交 |
 | `fill.ps1` | 一键填充脚本 |
 | `check.ps1` | **发布前自检脚本**，见下文 |
 | `tools/make-og.ps1` | 生成社交卡片图 `og.png` |
-| `og.png` | 1200×630 卡片图。链接被贴进邮件或微信时显示的就是它 |
+| `og.png` | 社交卡片图。链接被贴进邮件或微信时显示的就是它 |
 | `robots.txt` / `sitemap.xml` | 给 Google Search Console / Bing 站长平台用 |
 | `.nojekyll` | 关闭 GitHub Pages 的 Jekyll 处理 |
 
@@ -73,9 +75,15 @@ powershell -ExecutionPolicy Bypass -File fill.ps1
 
 `fill.ps1` 跑完会把剩下的步骤列出来。核心是这一条：
 
-**删掉 `index.html` 开头那行 `<meta name="robots" content="noindex, nofollow">`。**
-它还在的时候，搜索引擎不会收录这个页面，导师搜你的名字找不到你。
-（或者一开始就跑 `fill.ps1 -GoLive`，填完顺手解除。）
+预览首页、导出 `cv.pdf` 并确认无误后，运行：
+
+```bash
+powershell -ExecutionPolicy Bypass -File fill.ps1 -GoLive
+```
+
+这会删除 `index.html` 的 `noindex` 并刷新 sitemap 日期。`noindex` 还在的时候，
+搜索引擎不会收录这个页面，导师搜你的名字找不到你。若你已经完全确认内容，
+也可以第一次填充时直接运行 `fill.ps1 -Yes -GoLive`。
 
 ---
 
@@ -207,7 +215,7 @@ GitHub Pages 走 CDN，直接访问原地址很可能拿到边缘节点的旧缓
 |---|---|---|
 | 1 | **填 `myinfo.txt` 并跑 `fill.ps1`** | ⬜ 待你动手。这是唯一挡着上线的事 |
 | 2 | **导出 `cv.pdf`** | ⬜ `cv.html` 和流程已就绪，等你填完内容 |
-| 3 | **注册 ORCID** | ⬜ 只有你能做。注册后填进 `myinfo.txt` 即自动启用 |
+| 3 | **ORCID** | ✅ 已在 `myinfo.txt` 填写；运行 `fill.ps1` 后会自动在主页和 CV 启用 |
 | 4 | 社交卡片图 | ✅ 已完成（`og.png`，填完姓名后会自动重生成一版） |
 | 5 | `robots.txt` / `sitemap.xml` | ✅ 已就绪，等 `noindex` 解除后去注册站长平台 |
 | 6 | **Google Search Console / Bing 站长平台** | ⬜ 待注册。平时用不上，但万一出现需要紧急撤下的内容，你能在几小时内提交移除请求，而不是在申请季才发现 |

@@ -6,14 +6,14 @@
 
       · 选填项留空时，把页面上对应的整块删掉（不留空标题、空行、悬空的说明注释）
       · ORCID 填了就自动取消注释启用，留空就把那两行整个删掉
-      · 填完后重新生成带姓名的 og.png，并把 sitemap 的 lastmod、CV 的更新月份刷成今天
+      · 填完后重新生成带姓名的 og.png，并把 sitemap 的 lastmod、主页与 CV 的更新月份刷成今天
 
     用法：
       powershell -ExecutionPolicy Bypass -File fill.ps1
       powershell -ExecutionPolicy Bypass -File fill.ps1 -Yes        # 跳过确认
       powershell -ExecutionPolicy Bypass -File fill.ps1 -Yes -GoLive # 并解除 noindex
 
-    动手前每个被改的文件都会存一份 .bak；反悔就把 .bak 改回原名，或者 git checkout。
+    动手前每个被改的文件都会存一份 .bak；需要回退时请恢复对应的单个 .bak。
 
     退出码：0 = 成功；1 = 有问题，什么都没改
 #>
@@ -208,8 +208,41 @@ if ($hidden.ContainsKey('ORCID') -and -not $found.ContainsKey('ORCID')) {
 $tmpl = @($hidden.Keys | Sort-Object)
 
 if ($found.Count -eq 0) {
+    if ($GoLive) {
+        $indexPath = Join-Path $root 'index.html'
+        $original = ReadUtf8 $indexPath
+        $updated = RemoveComment $original '避免半成品被搜索引擎收录'
+        $updated = [regex]::Replace(
+            $updated,
+            '(?im)^[ \t]*<meta\s+name="robots"\s+content="noindex[^"]*">[ \t]*\r?\n',
+            ''
+        )
+        if ($updated -ceq $original) {
+            SayOk "index.html 已经允许搜索引擎收录，不需要重复修改。"
+        } else {
+            Copy-Item $indexPath "$indexPath.golive.bak" -Force
+            WriteUtf8 $indexPath $updated
+            SayOk "已解除 index.html 的 noindex（备份：index.html.golive.bak）"
+
+            $sm = Join-Path $root 'sitemap.xml'
+            if (Test-Path $sm) {
+                Copy-Item $sm "$sm.golive.bak" -Force
+                $sitemap = ReadUtf8 $sm
+                $sitemap = [regex]::Replace(
+                    $sitemap,
+                    '(<lastmod>)[^<]*(</lastmod>)',
+                    "`${1}$(Get-Date -Format 'yyyy-MM-dd')`${2}"
+                )
+                WriteUtf8 $sm $sitemap
+                SayOk "sitemap.xml 的 lastmod 已更新为今天"
+            }
+        }
+        Say "        请再运行 check.ps1；通过后再提交和发布。"
+        exit 0
+    }
     SayWarn "页面里已经没有要填的占位符了 —— 看起来你之前跑过一次 fill.ps1。"
-    Say    "        想重填的话：git checkout index.html cv.html 还原后再跑。"
+    Say    "        想重填的话，请先查看差异，再从对应 .bak 恢复需要重填的单个文件。"
+    Say    "        若只是准备上线，可运行 fill.ps1 -GoLive 解除 noindex。"
     exit 0
 }
 
@@ -317,11 +350,17 @@ foreach ($p in $pages) {
         $text = RemoveBlock $text '{{需你填写:如有临床或工作经历请在此说明否则删除本段}}' '<p' '</p>'
     }
     if ($dropOrcid) {
+        # 结构化数据中的 ORCID 不是注释，留空时同时移除对应数组项。
+        $text = $text.Replace(', "https://orcid.org/{{需你填写:ORCID}}"', '')
         $text = RemoveComment $text 'orcid.org'
         $text = RemoveComment $text '有 ORCID 后'
     } else {
         # 把那一行从注释里放出来
-        $text = [regex]::Replace($text, '(?s)<!--\s*(<li><a href="https://orcid\.org/.*?</li>)\s*-->', '$1')
+        $text = [regex]::Replace(
+            $text,
+            '(?s)<!--\s*(<li><a\b[^>]*href="https://orcid\.org/.*?</li>)\s*-->',
+            '$1'
+        )
         $text = RemoveComment $text '有 ORCID 后'
     }
 
@@ -335,6 +374,15 @@ foreach ($p in $pages) {
     # CV 页脚的更新月份
     $text = [regex]::Replace($text, '(<span class="cv-date">)[^<]*(</span>)',
                              "`${1}$(Get-Date -Format 'yyyy-MM')`${2}")
+    # 首页页脚的更新月份
+    if ($p.Name -eq 'index.html') {
+        $month = Get-Date -Format 'yyyy-MM'
+        $text = [regex]::Replace(
+            $text,
+            '<time\s+class="site-updated"\s+datetime="[^"]*">[^<]*</time>',
+            "<time class=`"site-updated`" datetime=`"$month`">$month</time>"
+        )
+    }
 
     # 没变化的文件（比如 404.html）不动，免得留下一堆没用的 .bak
     if ($text -ceq $orig) { Say "  [跳过] $($p.Name)：没有需要改的内容"; continue }
@@ -384,12 +432,10 @@ Say ""
 Say "  1. 跑自检：   powershell -ExecutionPolicy Bypass -File check.ps1"
 Say "  2. 本地看一眼：双击 index.html，再打开 cv.html 确认排版"
 if (-not $GoLive) {
-    Say "  3. 确认无误后，删掉 index.html 里那行 <meta name=`"robots`" content=`"noindex, nofollow`">"
-    Say "     —— 它还在的时候，导师搜你的名字是搜不到这个页面的。"
-    Say "     （或者：git checkout . 还原后改跑  fill.ps1 -GoLive）"
-    Say "  4. 导出 CV：打开 cv.html → Ctrl+P → 另存为 PDF → 存成 cv.pdf"
-    Say "  5. 回到 index.html 取消 CV 链接那行的注释"
-    Say "  6. git add . ; git commit -m `"填写个人信息`" ; git push"
+    Say "  3. 导出 CV：打开 cv.html → Ctrl+P → 另存为 PDF → 存成 cv.pdf"
+    Say "  4. 回到 index.html 取消 CV 链接那行的注释"
+    Say "  5. 确认无误后运行 fill.ps1 -GoLive，解除 noindex"
+    Say "  6. 再跑一次 check.ps1；通过后 git add / commit / push"
 } else {
     Say "  3. 导出 CV：打开 cv.html → Ctrl+P → 另存为 PDF → 存成 cv.pdf"
     Say "  4. 回到 index.html 取消 CV 链接那行的注释"

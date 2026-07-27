@@ -1,5 +1,5 @@
 ﻿<#
-    生成社交卡片图 og.png（1200×630）
+    生成社交卡片图 og.png（1731×909，1.91:1）
     —— 导师把主页链接贴进邮件或微信时，显示的就是这张图。
 
     用法：
@@ -70,9 +70,10 @@ function New-Fnt {
         [System.Drawing.GraphicsUnit]::Pixel)
 }
 
-$W = 1200; $H = 630; $M = 88   # 画布与左右留白
+$W = 1200; $H = 630; $M = 88   # 逻辑画布与左右留白
+$bitmapW = 1731; $bitmapH = 909 # 高分辨率输出，保持 1.91:1
 
-$bmp = New-Object System.Drawing.Bitmap $W, $H
+$bmp = New-Object System.Drawing.Bitmap $bitmapW, $bitmapH
 $g   = [System.Drawing.Graphics]::FromImage($bmp)
 $g.SmoothingMode     = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
 # 用 AntiAliasGridFit 而不是 ClearType：ClearType 是 RGB 次像素渲染，
@@ -87,11 +88,13 @@ try {
     # ---------- 背景：深青，右下角稍亮一点，避免整块死板 ----------
     $bgTop = [System.Drawing.Color]::FromArgb(255, 12, 74, 79)
     $bgBot = [System.Drawing.Color]::FromArgb(255, 17, 100, 106)
-    $rect  = New-Object System.Drawing.Rectangle 0, 0, $W, $H
+    $rect  = New-Object System.Drawing.Rectangle 0, 0, $bitmapW, $bitmapH
     $grad  = Track (New-Object System.Drawing.Drawing2D.LinearGradientBrush(
                     $rect, $bgTop, $bgBot,
                     [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal))
     $g.FillRectangle($grad, $rect)
+    # 后续仍按 1200×630 的逻辑坐标绘制，输出时整体高质量放大。
+    $g.ScaleTransform([single]($bitmapW / $W), [single]($bitmapH / $H))
 
     $white = { param($a) [System.Drawing.Color]::FromArgb($a, 255, 255, 255) }
 
@@ -164,7 +167,7 @@ finally {
 
 $size = [math]::Round((Get-Item $Out).Length / 1KB, 1)
 $who  = if ($Name) { "含姓名「$Name」" } else { "无姓名版（index.html 里还是占位符）" }
-Write-Host "已生成 $Out —— 1200x630，$size KB，$who" -ForegroundColor Green
+Write-Host "已生成 $Out —— 1731x909，$size KB，$who" -ForegroundColor Green
 if (-not $Name) {
     Write-Host "  填完占位符后 fill.ps1 会自动重新生成一版带姓名的。" -ForegroundColor DarkGray
 }
