@@ -11,3 +11,7 @@ myinfo.txt
 
 # 发给特定单位的完整版 CV（含未投稿稿件），不要公开
 cv-full.pdf
+
+# Sites 匿名试运行版的本地构建产物
+dist/
+*.tgz
