@@ -23,7 +23,7 @@
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
 
-<header class="site-header">
+<header class="site-header" id="topbar">
   <div class="wrap bar">
     <a class="brand" href="/" aria-label="返回首页">
       <span class="mark" aria-hidden="true"></span>
@@ -42,7 +42,7 @@
 <main id="main">
   <section class="hero" id="about">
     <div class="wrap hero-grid">
-      <div>
+      <div class="hero-copy">
         <p class="kicker light"><span></span> PhD application portfolio</p>
         <h1>NA <span>Anonymous preview</span></h1>
         <p class="role">眼科临床研究 · 临床证据可核验性</p>
@@ -67,7 +67,8 @@
           <a class="btn btn-ghost" href="https://github.com/Cosine753" rel="me">GitHub</a>
         </p>
       </div>
-      <div class="iris" aria-hidden="true">
+      <div class="iris" id="iris" aria-hidden="true">
+        <span class="glow"></span>
         <span class="ring r1"></span>
         <span class="ring r2"></span>
         <span class="ring r3"></span>
@@ -80,9 +81,9 @@
   </section>
 
   <ol class="principles wrap">
-    <li><strong>01</strong><span>回到原始来源</span>每一个关键数字都应能被定位和复核。</li>
-    <li><strong>02</strong><span>先锁定，再分析</span>判断阈值和失败条件早于结果出现。</li>
-    <li><strong>03</strong><span>优先检验自己</span>证据推翻观点时，照实改写并保留轨迹。</li>
+    <li class="reveal"><strong>01</strong><span>回到原始来源</span>每一个关键数字都应能被定位和复核。</li>
+    <li class="reveal"><strong>02</strong><span>先锁定，再分析</span>判断阈值和失败条件早于结果出现。</li>
+    <li class="reveal"><strong>03</strong><span>优先检验自己</span>证据推翻观点时，照实改写并保留轨迹。</li>
   </ol>
 
   <section class="band" id="work">
@@ -91,7 +92,7 @@
         <p>01 / Selected work</p>
         <h2>可核验的公开作品</h2>
       </header>
-      <article class="work">
+      <article class="work reveal">
         <div class="work-top">
           <p class="pill"><i></i> Completed · Live · v1.0.0</p>
           <p class="en">Browser-based research demonstrator · MIT</p>
@@ -120,28 +121,28 @@
         <p class="section-lead">围绕一条主线展开：从信息如何产生，到证据能够支持什么。</p>
       </header>
       <ol class="research">
-        <li>
+        <li class="reveal">
           <span class="no">01</span>
           <h3>眼科影像采集质量与失败记录</h3>
           <p class="en">Capture quality &amp; reject/repeat analysis</p>
           <p>那些没有进入数据集的采集失败，会如何改变我们对真实筛查质量的判断？</p>
           <p class="path">失败事件审计 · 重拍原因编码 · 后续处置追踪</p>
         </li>
-        <li class="featured">
+        <li class="featured reveal">
           <span class="no">02</span>
           <h3>临床证据的可核验性与可复现性</h3>
           <p class="en">Verifiability &amp; reproducibility</p>
           <p>外部研究者仅凭公开记录，能把一项临床结论复核到哪一步？</p>
           <p class="path">注册信息恢复 · 数值溯源 · 预设判定阈值</p>
         </li>
-        <li>
+        <li class="reveal">
           <span class="no">03</span>
           <h3>公开眼科数据集的参考标准</h3>
           <p class="en">Reference-standard reliability</p>
           <p>当标注、分析单位与患者划分不清时，数据集的性能结论还能信到什么程度？</p>
           <p class="path">标注一致性 · 泄漏审计 · 患者级复核</p>
         </li>
-        <li>
+        <li class="reveal">
           <span class="no">04</span>
           <h3>医学影像互操作与记录规范</h3>
           <p class="en">Imaging interoperability</p>
@@ -160,17 +161,17 @@
         <p class="section-lead">从一次影像采集为什么失败，到一项临床主张为什么可信：把零散的记录缺口连成一条可测量、可复核、可改进的证据链。</p>
       </header>
       <ol class="agenda">
-        <li>
+        <li class="reveal">
           <p class="en">Measure</p>
           <h3>测量“没有进入数据”的失败</h3>
           <p>建立采集失败、重拍原因与后续处置的最小记录集，估计被常规数据流程忽略的质量损失。</p>
         </li>
-        <li>
+        <li class="reveal">
           <p class="en">Trace</p>
           <h3>连接主张与原始记录</h3>
           <p>为数据、分析和稿件数字建立可追溯关系，让外部研究者能判断结论在哪一步获得支持、在哪一步失去证据。</p>
         </li>
-        <li>
+        <li class="reveal">
           <p class="en">Translate</p>
           <h3>把审计结果变成可执行规范</h3>
           <p>将发现的记录缺口转化为字段、原因编码和一致性声明，使方法改进能够进入真实临床与研究流程。</p>
@@ -186,11 +187,11 @@
         <h2>方法与能力</h2>
       </header>
       <ul class="methods">
-        <li><strong>可复现实现与版本固定</strong><span>将参数、阈值与模型路径固定到可运行版本；保持页面自包含，并用锁定输出检查实现一致性。</span><em class="on">已有公开作品</em></li>
-        <li><strong>证据核验与来源追踪</strong><span>回到原始来源核对关键数字，保存可重跑的检索式、执行日期与判断依据。</span><em>正在深化</em></li>
-        <li><strong>临床审计与研究设计</strong><span>重视分析单位、判定主体、可行性门与事前阈值；关注图像、眼、患者和筛查次之间不可互换的层级。</span><em>正在深化</em></li>
-        <li><strong>统计与数据分析</strong><span>使用 Python 做数据整理、区间估计、回归与一致性分析，把方法选择与具体研究设计对应起来。</span><em>正在深化</em></li>
-        <li><strong>医学影像标准与记录规范</strong><span>关注 DICOM / IHE 对采集失败与重拍事件的表达能力，以及基层场景可以落地的最小记录方案。</span><em>正在深化</em></li>
+        <li class="reveal"><strong>可复现实现与版本固定</strong><span>将参数、阈值与模型路径固定到可运行版本；保持页面自包含，并用锁定输出检查实现一致性。</span><em class="on">已有公开作品</em></li>
+        <li class="reveal"><strong>证据核验与来源追踪</strong><span>回到原始来源核对关键数字，保存可重跑的检索式、执行日期与判断依据。</span><em>正在深化</em></li>
+        <li class="reveal"><strong>临床审计与研究设计</strong><span>重视分析单位、判定主体、可行性门与事前阈值；关注图像、眼、患者和筛查次之间不可互换的层级。</span><em>正在深化</em></li>
+        <li class="reveal"><strong>统计与数据分析</strong><span>使用 Python 做数据整理、区间估计、回归与一致性分析，把方法选择与具体研究设计对应起来。</span><em>正在深化</em></li>
+        <li class="reveal"><strong>医学影像标准与记录规范</strong><span>关注 DICOM / IHE 对采集失败与重拍事件的表达能力，以及基层场景可以落地的最小记录方案。</span><em>正在深化</em></li>
       </ul>
     </div>
   </section>
@@ -203,11 +204,11 @@
       </header>
       <div>
         <ol class="timeline">
-          <li>
+          <li class="reveal">
             <h3>个人经历暂不公开</h3>
             <p>本页仅用于测试域名与页面展示。</p>
           </li>
-          <li>
+          <li class="reveal">
             <h3>研究资料将在正式版补充</h3>
             <p>公开前将由本人复核。</p>
           </li>
@@ -235,5 +236,7 @@
     <p>© 2026 · 纯静态 · 无跟踪 · 更新于 <time datetime="2026-08">2026-08</time></p>
   </div>
 </footer>
+<script src="assets/motion.js" defer></script>
 </body>
 </html>
+
