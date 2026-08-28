@@ -1,13 +1,41 @@
+import { createHash } from "node:crypto";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 
 const root = new URL("./", import.meta.url);
 const dist = new URL("./dist/", root);
+const staticRoot = new URL("./dist/static/", root);
+
+const LOCKED_CALCULATOR_SHA256 =
+  "dff5204b9b9483880b2170b4ca1aa0015bc0cdf1cfddf572ffd8089225c1a70c";
 
 const readText = async (path) => readFile(new URL(path, root), "utf8");
+
+const writeStatic = async (relativePath, body) => {
+  const target = new URL(relativePath, staticRoot);
+  await mkdir(new URL("./", target), { recursive: true });
+  await writeFile(target, body, "utf8");
+};
 
 let html = await readText("index.html");
 const css = await readText("assets/site.css");
 let notFound = await readText("404.html");
+const calculatorRaw = await readText("third_party/myopia-risk-calculator/index.html");
+
+const calculatorSha = createHash("sha256")
+  .update(calculatorRaw.replace(/\r\n/g, "\n").replace(/\r/g, "\n"))
+  .digest("hex");
+if (calculatorSha !== LOCKED_CALCULATOR_SHA256) {
+  throw new Error(
+    `Calculator snapshot hash mismatch: expected ${LOCKED_CALCULATOR_SHA256}, got ${calculatorSha}`,
+  );
+}
+
+// Keep the demo on this same host. Rewriting github.io -> echosine.net made the
+// CTA depend on custom-domain DNS, and the worker did not serve that path.
+html = html.replaceAll(
+  "https://cosine753.github.io/myopia-risk-calculator/",
+  "/myopia-risk-calculator/",
+);
 
 // The public trial intentionally contains no real identity or contact details.
 html = html
@@ -17,8 +45,8 @@ html = html
   .replace(/<meta property="og:image:(?:width|height|alt)"[^>]*>\s*/g, "")
   .replaceAll("https://cosine753.github.io/", "https://echosine.net/")
   .replace(
-    /<li><a class="button button-secondary" href="mailto:\{\{需你填写:邮箱\}\}">邮件联系 <span aria-hidden="true">↗<\/span><\/a><\/li>/,
-    '<li><a class="button button-secondary" href="https://github.com/Cosine753" rel="me">GitHub 联系 <span aria-hidden="true">↗</span></a></li>',
+    /\n\s*<li><a class="button button-secondary" href="mailto:\{\{需你填写:邮箱\}\}">邮件联系 <span aria-hidden="true">↗<\/span><\/a><\/li>/,
+    "",
   )
   .replace(
     /<a class="contact-mail" href="mailto:\{\{需你填写:邮箱\}\}">\s*<span>\{\{需你填写:邮箱\}\}<\/span>\s*<i aria-hidden="true">↗<\/i>\s*<\/a>/,
@@ -43,12 +71,16 @@ for (const [key, value] of replacements) {
 
 html = html
   .replace("NA的个人学术主页", "匿名个人学术主页")
-  .replace("© 2026 NA", "© 2026 NA")
   .replace('datetime="2026-07">2026-07', 'datetime="2026-08">2026-08');
 
 notFound = notFound
   .replaceAll("https://cosine753.github.io/", "https://echosine.net/")
   .replace(/<!--[^]*?-->/g, "");
+
+let calculator = calculatorRaw.replace(
+  /<meta name="robots" content="index, follow"\s*\/?>/,
+  '<meta name="robots" content="noindex, nofollow">',
+);
 
 if (html.includes("{{需你填写:")) {
   throw new Error("Anonymous build still contains an unresolved visible placeholder.");
@@ -56,20 +88,67 @@ if (html.includes("{{需你填写:")) {
 if (/mailto:/i.test(html)) {
   throw new Error("Anonymous build must not publish an email address.");
 }
+if (!html.includes('href="/myopia-risk-calculator/"')) {
+  throw new Error("Anonymous build must keep the calculator demo on this host.");
+}
+if ((html.match(/github\.com\/Cosine753/g) ?? []).length < 1) {
+  throw new Error("Anonymous build dropped the GitHub contact path.");
+}
+if (/content="index,\s*follow"/i.test(calculator)) {
+  throw new Error("Calculator copy must remain noindex on the anonymous host.");
+}
 
 const robots = `User-agent: *\nAllow: /\n\n# Anonymous trial: discovery remains disabled by the page's noindex directive.\n`;
 
-const routes = {
-  "/": { body: html, type: "text/html; charset=utf-8" },
-  "/index.html": { body: html, type: "text/html; charset=utf-8" },
+const worker = `const home = ${JSON.stringify(html)};
+const css = ${JSON.stringify(css)};
+const robots = ${JSON.stringify(robots)};
+const calculator = ${JSON.stringify(calculator)};
+const notFound = ${JSON.stringify(notFound)};
+
+const files = {
+  "/": { body: home, type: "text/html; charset=utf-8" },
+  "/index.html": { body: home, type: "text/html; charset=utf-8" },
   "/assets/site.css": { body: css, type: "text/css; charset=utf-8", cache: true },
   "/robots.txt": { body: robots, type: "text/plain; charset=utf-8" },
+  "/myopia-risk-calculator": { body: calculator, type: "text/html; charset=utf-8" },
+  "/myopia-risk-calculator/": { body: calculator, type: "text/html; charset=utf-8" },
+  "/myopia-risk-calculator/index.html": { body: calculator, type: "text/html; charset=utf-8" },
 };
 
-const worker = `const routes = ${JSON.stringify(routes)};\nconst notFound = ${JSON.stringify(notFound)};\n\nexport default {\n  async fetch(request) {\n    const url = new URL(request.url);\n    const method = request.method.toUpperCase();\n    if (method !== "GET" && method !== "HEAD") {\n      return new Response("Method Not Allowed", { status: 405, headers: { Allow: "GET, HEAD" } });\n    }\n\n    const route = routes[url.pathname];\n    const selected = route ?? { body: notFound, type: "text/html; charset=utf-8" };\n    const headers = new Headers({\n      "Content-Type": selected.type,\n      "X-Content-Type-Options": "nosniff",\n      "Referrer-Policy": "strict-origin-when-cross-origin",\n      "X-Robots-Tag": "noindex, nofollow",\n      "Cache-Control": selected.cache ? "public, max-age=3600" : "no-store",\n    });\n    return new Response(method === "HEAD" ? null : selected.body, {\n      status: route ? 200 : 404,\n      headers,\n    });\n  },\n};\n`;
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    const method = request.method.toUpperCase();
+    if (method !== "GET" && method !== "HEAD") {
+      return new Response("Method Not Allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
+    }
+
+    const route = files[url.pathname];
+    const selected = route ?? { body: notFound, type: "text/html; charset=utf-8" };
+    const headers = new Headers({
+      "Content-Type": selected.type,
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "X-Robots-Tag": "noindex, nofollow",
+      "Cache-Control": selected.cache ? "public, max-age=3600" : "no-store",
+    });
+    return new Response(method === "HEAD" ? null : selected.body, {
+      status: route ? 200 : 404,
+      headers,
+    });
+  },
+};
+`;
 
 await rm(dist, { recursive: true, force: true });
 await mkdir(new URL("./server/", dist), { recursive: true });
 await writeFile(new URL("./server/index.js", dist), worker, "utf8");
+
+await writeStatic("index.html", html);
+await writeStatic("404.html", notFound);
+await writeStatic("robots.txt", robots);
+await writeStatic("assets/site.css", css);
+await writeStatic("myopia-risk-calculator/index.html", calculator);
 
 console.log("Built anonymous echosine.net trial site.");

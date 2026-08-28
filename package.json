@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node test-site.mjs"
+    "test": "node build.mjs && node test-site.mjs",
+    "preview": "node serve.mjs"
   }
 }
