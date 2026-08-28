@@ -181,7 +181,7 @@ h1 span {
   text-transform: uppercase;
 }
 
-.facts dd { margin: 0.25rem 0 0; }
+.facts dd { margin: 0.25rem 0 0; text-wrap: pretty; }
 
 .principles {
   margin: 2rem 0 0;
