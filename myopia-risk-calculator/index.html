@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>儿童近视与干眼共病问卷风险分层计算器 | Vision Triage</title>
+<meta name="description" content="基于锁定两阶段Logistic模型的儿童近视及近视–干眼共病问卷风险分层研究演示工具。所有计算在浏览器本地完成，不上传、不保存任何输入。" />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b776e'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' font-weight='700' fill='%23ffffff' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E" />
+<style>
+/* ---- base reset (replaces the Tailwind preflight used by the original build) ---- */
+*, *::before, *::after { box-sizing: border-box; border: 0 solid #d8e2e4; }
+html { line-height: 1.5; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; margin: 0; }
+p, figure, blockquote, dl, dd, pre { margin: 0; }
+ol, ul { list-style: none; margin: 0; padding: 0; }
+fieldset { margin: 0; padding: 0; }
+legend { padding: 0; }
+button, input, select, textarea { font-family: inherit; font-size: 100%; font-weight: inherit; line-height: inherit; color: inherit; margin: 0; padding: 0; }
+button { background-color: transparent; background-image: none; cursor: pointer; }
+img, svg, video, canvas { display: block; vertical-align: middle; max-width: 100%; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+[hidden] { display: none !important; }
+
+/* ---- application styles (ported verbatim from the deployed build) ---- */
+:root {
+  --ink: #132a36;
+  --muted: #65747d;
+  --line: #d8e2e4;
+  --paper: #f4f7f5;
+  --white: #ffffff;
+  --teal: #0b776e;
+  --teal-dark: #075d57;
+  --teal-soft: #dff2ed;
+  --yellow: #f0c95b;
+  --orange: #d87847;
+  --blue: #4f7897;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, select { font: inherit; }
+a { color: inherit; text-decoration: none; }
+
+main { min-height: 100vh; overflow: hidden; }
+.site-header {
+  width: min(1180px, calc(100% - 48px));
+  height: 82px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(19, 42, 54, 0.12);
+}
+.brand { display: inline-flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border-radius: 10px 2px 10px 2px; color: white; background: var(--teal);
+  font-weight: 800; font-family: Georgia, serif; font-size: 21px;
+}
+.brand strong, .brand small { display: block; }
+.brand strong { font-size: 15px; letter-spacing: .02em; }
+.brand small { color: var(--muted); font-size: 10px; margin-top: 2px; text-transform: uppercase; letter-spacing: .09em; }
+.header-badges { display: flex; gap: 8px; }
+.header-badges span {
+  border: 1px solid var(--line); background: rgba(255,255,255,.55); border-radius: 99px;
+  padding: 7px 10px; color: #53636b; font-size: 11px;
+}
+
+.hero {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  min-height: 530px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(360px, .7fr);
+  gap: 70px;
+  align-items: center;
+  position: relative;
+}
+.hero::before {
+  content: ""; position: absolute; width: 520px; height: 520px; border-radius: 50%;
+  right: -330px; top: 20px; background: rgba(11, 119, 110, .07); z-index: -1;
+}
+.kicker { margin: 0 0 12px; color: var(--teal); font-weight: 750; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+.hero h1 { margin: 0; font-family: Georgia, "Noto Serif SC", serif; font-size: clamp(43px, 5vw, 68px); line-height: 1.12; letter-spacing: -.035em; font-weight: 520; }
+.hero-intro { max-width: 630px; margin: 25px 0 0; color: #52636b; font-size: 17px; line-height: 1.85; }
+.hero-actions { display: flex; align-items: center; gap: 28px; margin-top: 32px; }
+.primary-link, .calculate-button {
+  border: 0; background: var(--teal); color: white; border-radius: 7px;
+  padding: 14px 22px; font-weight: 750; cursor: pointer; transition: .2s ease;
+  box-shadow: 0 8px 20px rgba(11, 119, 110, .18);
+}
+.primary-link:hover, .calculate-button:hover { background: var(--teal-dark); transform: translateY(-1px); }
+.text-link { color: var(--ink); font-weight: 650; font-size: 14px; }
+.text-link span { color: var(--teal); margin-left: 4px; }
+
+.hero-card {
+  background: #103943; color: white; border-radius: 18px; padding: 27px;
+  box-shadow: 0 28px 60px rgba(19, 42, 54, .18); position: relative; overflow: hidden;
+}
+.hero-card::after { content: ""; position: absolute; width: 170px; height: 170px; border-radius: 50%; right: -70px; bottom: -85px; background: rgba(240,201,91,.12); }
+.hero-card-top { display: flex; justify-content: space-between; align-items: center; color: #bad2d3; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 26px; }
+.status-dot { color: #d8f4eb; }
+.status-dot::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; background: #6ed4b9; box-shadow: 0 0 0 4px rgba(110,212,185,.12); }
+.pathway-step { display: grid; grid-template-columns: 50px 1fr; gap: 15px; align-items: center; }
+.step-number { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(255,255,255,.28); color: var(--yellow); font: 18px Georgia, serif; }
+.pathway-step strong { font-size: 16px; }
+.pathway-step p { margin: 5px 0 4px; color: #d3e2e3; font-size: 13px; }
+.pathway-step span { color: #8fb1b4; font-size: 11px; }
+.pathway-line { width: 1px; height: 30px; margin-left: 23px; background: linear-gradient(#527178, #d4ab42); }
+.privacy-chip { margin-top: 26px; border-top: 1px solid rgba(255,255,255,.12); padding-top: 18px; color: #b9d0d2; font-size: 11px; }
+.privacy-chip span { color: #6ed4b9; margin-right: 6px; }
+
+.notice {
+  width: min(1180px, calc(100% - 48px)); margin: -2px auto 32px; padding: 15px 19px;
+  display: flex; align-items: center; gap: 13px; border: 1px solid #ead9a4; background: #fffaf0; border-radius: 9px; color: #66582f;
+}
+.notice p { margin: 0; font-size: 13px; line-height: 1.6; }
+.notice-icon { flex: 0 0 auto; width: 23px; height: 23px; display: grid; place-items: center; border-radius: 50%; background: var(--yellow); color: #4e421e; font-weight: 900; }
+
+.calculator-shell {
+  width: min(1180px, calc(100% - 48px)); margin: 0 auto 34px; padding: 42px;
+  background: var(--white); border: 1px solid rgba(19,42,54,.09); border-radius: 18px;
+  box-shadow: 0 16px 45px rgba(19, 42, 54, .07);
+}
+.section-heading { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+.section-heading h2, .method-heading h2, .result-summary h2 { margin: 0; font: 34px/1.2 Georgia, "Noto Serif SC", serif; }
+.completion { width: 180px; }
+.completion > span { display: block; text-align: right; color: var(--teal); font-weight: 800; font-size: 12px; margin-bottom: 7px; }
+.completion-track, .probability-track { height: 5px; background: #e7eeee; border-radius: 99px; overflow: hidden; }
+.completion-track i { display: block; height: 100%; background: var(--teal); transition: width .25s ease; }
+.question-group { border: 0; padding: 32px 0 5px; margin: 0; }
+.question-group + .question-group { border-top: 1px solid var(--line); margin-top: 25px; }
+.question-group legend { width: 100%; display: flex; align-items: center; gap: 13px; padding: 0; margin-bottom: 22px; }
+.question-group legend > span:first-child { color: var(--teal); font: 22px Georgia, serif; }
+.question-group legend strong, .question-group legend small { display: block; }
+.question-group legend strong { font-size: 17px; }
+.question-group legend small { margin-top: 3px; color: #8a969b; font-size: 10px; text-transform: uppercase; letter-spacing: .11em; }
+.field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.field { position: relative; display: grid; grid-template-columns: minmax(160px, 1fr) minmax(150px, .72fr); align-items: center; gap: 16px; border: 1px solid #dfe7e8; border-radius: 10px; padding: 15px 16px; background: #fbfcfb; transition: .2s ease; }
+.field:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(11,119,110,.08); background: white; }
+.field-label > span, .field-label small { display: block; }
+.field-label > span { font-weight: 680; font-size: 13px; }
+.field-label small { margin-top: 4px; color: #8a969b; font-size: 10px; }
+.field-order { position: absolute; top: 7px; right: 9px; color: #bac4c7; font-size: 8px; }
+.select-wrap { position: relative; }
+.select-wrap::after { content: "⌄"; position: absolute; right: 10px; top: 50%; transform: translateY(-56%); color: var(--teal); pointer-events: none; }
+select { width: 100%; appearance: none; border: 0; border-bottom: 1px solid #c8d4d6; background: transparent; padding: 9px 26px 9px 2px; outline: none; color: #263d47; font-size: 12px; cursor: pointer; }
+.form-message { margin: 24px 0 0; padding: 12px 15px; border-radius: 7px; background: #fff0ed; color: #9d4738; font-size: 13px; }
+.form-actions { display: flex; align-items: center; gap: 17px; margin-top: 34px; padding-top: 27px; border-top: 1px solid var(--line); }
+.calculate-button { min-width: 200px; }
+.calculate-button span { margin-left: 16px; }
+.reset-button { border: 1px solid #ccd7d9; border-radius: 7px; color: #52636b; background: white; padding: 13px 18px; cursor: pointer; }
+.reset-button:hover { border-color: #87999e; }
+.form-actions p { margin: 0 0 0 auto; color: #8a969b; font-size: 10px; }
+
+.result-panel {
+  width: min(1180px, calc(100% - 48px)); margin: 0 auto 34px; padding: 42px;
+  display: grid; grid-template-columns: 1fr .85fr; gap: 56px; border-radius: 18px;
+  background: #123941; color: white; box-shadow: 0 18px 48px rgba(19,42,54,.15);
+}
+.result-title-row { display: flex; align-items: center; gap: 18px; }
+.result-symbol { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 50%; background: var(--teal-soft); color: var(--teal-dark); font: 28px Georgia, serif; }
+.result-summary h2 { font-size: 31px; }
+.result-title-row p { margin: 5px 0 0; color: #a9c3c6; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.result-note { max-width: 590px; margin: 22px 0; color: #d0dfe0; line-height: 1.75; font-size: 13px; }
+.stage-readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stage-readouts > div { border: 1px solid rgba(255,255,255,.12); border-radius: 9px; padding: 15px; }
+.stage-readouts span, .stage-readouts strong, .stage-readouts small { display: block; }
+.stage-readouts span { color: #9fb8bb; font-size: 10px; }
+.stage-readouts strong { margin: 5px 0; font: 27px Georgia, serif; color: var(--yellow); }
+.stage-readouts small { color: #7f9fa3; font-size: 9px; }
+.probability-card { padding: 25px; border-radius: 12px; background: white; color: var(--ink); }
+.probability-card h3 { margin: 0 0 23px; font-size: 15px; }
+.probability-row { margin-bottom: 18px; }
+.probability-row > div:first-child { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 12px; }
+.probability-row strong { font-size: 13px; }
+.probability-track i { display: block; height: 100%; border-radius: 99px; }
+.bar-healthy { background: var(--teal); }.bar-myopia { background: var(--blue); }.bar-comorbidity { background: var(--orange); }
+.probability-card > p { margin: 23px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: #7c8a90; font-size: 10px; line-height: 1.55; }
+.result-panel.comorbidity { background: #3e3535; }
+.result-panel.myopia { background: #17384d; }
+
+.method { width: min(1180px, calc(100% - 48px)); margin: 0 auto 75px; padding: 55px 0 0; }
+.method-heading { max-width: 760px; }
+.method-heading > p:last-child { color: var(--muted); margin-top: 14px; }
+.method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
+.method-grid article { min-height: 180px; padding: 24px; border-top: 3px solid var(--teal); background: white; box-shadow: 0 8px 25px rgba(19,42,54,.05); }
+.method-grid article > span { color: #9eb3b5; font: 24px Georgia, serif; }
+.method-grid h3 { margin: 25px 0 8px; font-size: 15px; }
+.method-grid p { margin: 0; color: var(--muted); line-height: 1.7; font-size: 12px; }
+details { margin-top: 17px; border: 1px solid var(--line); background: rgba(255,255,255,.55); border-radius: 8px; padding: 0 19px; }
+summary { padding: 17px 0; cursor: pointer; font-weight: 700; font-size: 12px; }
+.formula-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 5px 0 15px; }
+.formula-grid code { background: #e7efed; color: #23504e; border-radius: 5px; padding: 12px; font-size: 11px; }
+details > p { color: var(--muted); font-size: 11px; padding-bottom: 10px; }
+
+footer { background: #102d35; color: #bed0d2; padding: 31px max(24px, calc((100vw - 1180px) / 2)); display: flex; justify-content: space-between; align-items: center; gap: 40px; }
+footer strong, footer span { display: block; } footer strong { color: white; font-size: 14px; } footer span { margin-top: 4px; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line-height: 1.7; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 30px; padding: 60px 0; }
+  .hero-card { max-width: 620px; }
+  .field-grid, .result-panel { grid-template-columns: 1fr; }
+  .method-grid { grid-template-columns: 1fr; }
+  .formula-grid { grid-template-columns: 1fr; }
+  .header-badges span:nth-child(2) { display: none; }
+}
+
+@media (max-width: 600px) {
+  .site-header, .hero, .notice, .calculator-shell, .result-panel, .method { width: min(100% - 28px, 1180px); }
+  .site-header { height: 72px; }
+  .header-badges span:not(:last-child) { display: none; }
+  .hero { min-height: auto; padding: 45px 0; }
+  .hero h1 { font-size: 39px; }
+  .hero-intro { font-size: 15px; }
+  .hero-actions { align-items: flex-start; flex-direction: column; gap: 17px; }
+  .calculator-shell, .result-panel { padding: 25px 18px; }
+  .section-heading { align-items: flex-start; gap: 20px; }
+  .completion { width: 95px; }
+  .field { grid-template-columns: 1fr; gap: 9px; }
+  .select-wrap { width: 100%; }
+  .form-actions { align-items: stretch; flex-direction: column; }
+  .form-actions p { margin: 0; }
+  .stage-readouts { grid-template-columns: 1fr; }
+  .result-summary h2 { font-size: 25px; }
+  footer { align-items: flex-start; flex-direction: column; }
+  footer p { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="返回页面顶部">
+      <span class="brand-mark">V</span>
+      <span>
+        <strong>Vision Triage</strong>
+        <small>Questionnaire research demo</small>
+      </span>
+    </a>
+    <div class="header-badges" aria-label="网站特性">
+      <span>本地计算</span>
+      <span>不保存输入</span>
+      <span>Model v2026.07</span>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <p class="kicker">Pediatric vision risk stratification</p>
+      <h1>儿童近视与干眼共病<br />问卷风险分层计算器</h1>
+      <p class="hero-intro">
+        输入15项非侵入性问卷信息，获得两阶段模型概率及三分类风险分层结果。
+        所有计算均在当前浏览器中完成。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-link" href="#calculator">开始评估</a>
+        <a class="text-link" href="#method">查看模型说明 <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <aside class="hero-card" aria-label="两阶段模型概览">
+      <div class="hero-card-top">
+        <span>Two-stage pathway</span>
+        <span class="status-dot">Locked</span>
+      </div>
+      <div class="pathway-step">
+        <div class="step-number">01</div>
+        <div>
+          <strong>初始模型</strong>
+          <p>近视相关状态 vs 健康</p>
+          <span>Threshold 0.575</span>
+        </div>
+      </div>
+      <div class="pathway-line"></div>
+      <div class="pathway-step">
+        <div class="step-number">02</div>
+        <div>
+          <strong>条件模型</strong>
+          <p>近视–干眼共病 vs 单纯近视</p>
+          <span>Threshold 0.150</span>
+        </div>
+      </div>
+      <div class="privacy-chip"><span>✓</span> 无数据库 · 无账号 · 无上传</div>
+    </aside>
+  </section>
+
+  <section class="notice" aria-label="重要提示">
+    <span class="notice-icon">!</span>
+    <p><strong>研究演示工具：</strong>结果仅用于问卷风险分层和科研展示，不能替代眼科检查、临床诊断或治疗建议。</p>
+  </section>
+
+  <section class="calculator-shell" id="calculator">
+    <div class="section-heading">
+      <div>
+        <p class="kicker">Questionnaire</p>
+        <h2>填写问卷信息</h2>
+      </div>
+      <div class="completion" aria-live="polite">
+        <span id="completionCount">0/15</span>
+        <div class="completion-track"><i id="completionBar" style="width: 0%"></i></div>
+      </div>
+    </div>
+
+    <form id="questionnaire" novalidate>
+      <div id="questionGroups"></div>
+      <p class="form-message" id="formMessage" role="alert" hidden></p>
+      <div class="form-actions">
+        <button class="calculate-button" type="submit">计算风险分层 <span aria-hidden="true">→</span></button>
+        <button class="reset-button" type="button" id="resetButton">清空重填</button>
+        <p>点击计算即表示您已了解该工具仅用于研究演示。</p>
+      </div>
+    </form>
+  </section>
+
+  <div id="resultMount"></div>
+
+  <section class="method" id="method">
+    <div class="method-heading">
+      <p class="kicker">How it works</p>
+      <h2>透明、锁定、可复核的计算路径</h2>
+      <p>模型不会在网页中重新训练、更新系数或调整阈值。</p>
+    </div>
+    <div class="method-grid">
+      <article><span>01</span><h3>浏览器本地计算</h3><p>问卷选项仅参与当前页面计算，不发送至服务器，也不写入浏览器存储。</p></article>
+      <article><span>02</span><h3>锁定Logistic模型</h3><p>使用论文中固定的两阶段截距、回归系数、编码方案和分类阈值。</p></article>
+      <article><span>03</span><h3>顺序风险分层</h3><p>先判断是否进入近视相关分支，再使用条件模型区分单纯近视与共病风险。</p></article>
+    </div>
+    <details>
+      <summary>查看概率公式与版本信息</summary>
+      <div class="formula-grid">
+        <code>P(健康) = 1 − pA</code>
+        <code>P(单纯近视) = pA × (1 − pC|A)</code>
+        <code>P(共病) = pA × pC|A</code>
+      </div>
+      <p>模型版本：2026-07-22；Stage 1阈值：0.575；Stage 2阈值：0.150。</p>
+    </details>
+  </section>
+
+  <footer>
+    <div><strong>Vision Triage</strong><span>Questionnaire-based research prototype</span></div>
+    <p>本工具不收集个人信息，不提供诊断，不构成医疗建议。如有视力下降、眼干、疼痛或其他不适，请及时接受专业眼科检查。</p>
+  </footer>
+</main>
+
+<script type="application/json" id="model-data">{
+  "model_key": "Traditional_TwoStage_Logistic_Tuned",
+  "model_name": "Locked hierarchical Logistic research prototype",
+  "description": "Privacy-sanitized browser-based research demonstration of the locked hierarchical Logistic pathway. This prototype reproduces initial-model, conditional-model, and final three-category probabilities from fixed coefficients and thresholds without refitting or recalibration.",
+  "notes": [
+    "The browser tool is a locked-parameter research prototype, not a clinical validation result.",
+    "The fitted conditional model is evaluated for every input profile during linked inference; its threshold affects the final label only after Stage 1 routes the record to the myopia-affected branch.",
+    "No participant-level validation records are included in this public version."
+  ],
+  "thresholds": {
+    "stage1_affected": 0.575,
+    "stage2_comorbidity_given_affected": 0.15
+  },
+  "intercepts": {
+    "stage1": -0.053737320525396405,
+    "stage2": -2.5217216006160172
+  },
+  "class_logic": {
+    "healthy": "1 - P(affected)",
+    "myopia_alone": "P(affected) * (1 - P(comorbidity | affected))",
+    "comorbidity": "P(affected) * P(comorbidity | affected)"
+  },
+  "classes": [
+    {
+      "code": 0,
+      "label": "Healthy"
+    },
+    {
+      "code": 1,
+      "label": "Myopia alone"
+    },
+    {
+      "code": 2,
+      "label": "Myopia-dry eye comorbidity"
+    }
+  ],
+  "variables": {
+    "Address": {
+      "key": "Address",
+      "label_en": "Residential region",
+      "label_source": "孩子家庭住址",
+      "reference_level": "1",
+      "reference_label": "城区",
+      "options": [
+        {
+          "value": "1",
+          "label": "城区"
+        },
+        {
+          "value": "2",
+          "label": "郊区"
+        },
+        {
+          "value": "3",
+          "label": "农村"
+        }
+      ],
+      "stages": [
+        "stage2"
+      ]
+    },
+    "Age": {
+      "key": "Age",
+      "label_en": "Age",
+      "label_source": "孩子年龄",
+      "reference_level": "1",
+      "reference_label": "≤6",
+      "options": [
+        {
+          "value": "1",
+          "label": "≤6"
+        },
+        {
+          "value": "2",
+          "label": "7-9"
+        },
+        {
+          "value": "3",
+          "label": "10-12"
+        },
+        {
+          "value": "4",
+          "label": "13-15"
+        },
+        {
+          "value": "5",
+          "label": "≥16"
+        }
+      ],
+      "stages": [
+        "stage1",
+        "stage2"
+      ]
+    },
+    "Daily_Outdoor_Time": {
+      "key": "Daily_Outdoor_Time",
+      "label_en": "Daily outdoor time",
+      "label_source": "孩子每天户外活动的时间",
+      "reference_level": "1",
+      "reference_label": "<1小时",
+      "options": [
+        {
+          "value": "1",
+          "label": "<1小时"
+        },
+        {
+          "value": "2",
+          "label": "1-2小时"
+        },
+        {
+          "value": "3",
+          "label": "2-3小时"
+        },
+        {
+          "value": "4",
+          "label": ">3小时"
+        }
+      ],
+      "stages": [
+        "stage1"
+      ]
+    },
+    "Daily_Sleep_Duration": {
+      "key": "Daily_Sleep_Duration",
+      "label_en": "Daily sleep duration",
+      "label_source": "孩子每天的睡眠时间",
+      "reference_level": "1",
+      "reference_label": "<6",
+      "options": [
+        {
+          "value": "1",
+          "label": "<6"
+        },
+        {
+          "value": "2",
+          "label": "6-8"
+        },
+        {
+          "value": "3",
+          "label": "8-10"
+        },
+        {
+          "value": "4",
+          "label": ">10"
+        }
+      ],
+      "stages": [
+        "stage2"
+      ]
+    },
+    "Daily_Study_Time": {
+      "key": "Daily_Study_Time",
+      "label_en": "Daily study time",
+      "label_source": "孩子每天用于学习的时间（不包括课外活动）",
+      "reference_level": "1",
+      "reference_label": "＜3小时",
+      "options": [
+        {
+          "value": "1",
+          "label": "＜3小时"
+        },
+        {
+          "value": "2",
+          "label": "3-4小时"
+        },
+        {
+          "value": "3",
+          "label": "5-6小时"
+        },
+        {
+          "value": "4",
+          "label": "＞6小时"
+        }
+      ],
+      "stages": [
+        "stage1",
+        "stage2"
+      ]
+    },
+    "Frequency_Eye_Exercises": {
+      "key": "Frequency_Eye_Exercises",
+      "label_en": "Eye-exercise frequency",
+      "label_source": "孩子每天做眼保健操的次数",
+      "reference_level": "1",
+      "reference_label": "0次",
+      "options": [
+        {
+          "value": "1",
+          "label": "0次"
+        },
+        {
+          "value": "2",
+          "label": "1次"
+        },
+        {
+          "value": "3",
+          "label": "2次"
+        },
+        {
+          "value": "4",
+          "label": "≥3次"
+        }
+      ],
+      "stages": [
+        "stage1"
+      ]
+    },
+    "Frequent_Study_Stress_or_Anxiety": {
+      "key": "Frequent_Study_Stress_or_Anxiety",
+      "label_en": "Frequent study stress or anxiety",
+      "label_source": "孩子是否经常感到学习压力大或焦虑",
+      "reference_level": "0",
+      "reference_label": "从不",
+      "options": [
+        {
+          "value": "0",
+          "label": "从不"
+        },
+        {
+          "value": "1",
+          "label": "很少"
+        },
+        {
+          "value": "2",
+          "label": "有时"
+        },
+        {
+          "value": "3",
+          "label": "经常"
+        }
+      ],
+      "stages": [
+        "stage1"
+      ]
+    },
+    "Gender": {
+      "key": "Gender",
+      "label_en": "Sex",
+      "label_source": "孩子性别",
+      "reference_level": "0",
+      "reference_label": "男",
+      "options": [
+        {
+          "value": "0",
+          "label": "男"
+        },
+        {
+          "value": "1",
+          "label": "女"
+        }
+      ],
+      "stages": [
+        "stage1",
+        "stage2"
+      ]
+    },
+    "Main_Types_of_Outdoor_Activities": {
+      "key": "Main_Types_of_Outdoor_Activities",
+      "label_en": "Main type of outdoor activity",
+      "label_source": "孩子户外活动的主要形式",
+      "reference_level": "1",
+      "reference_label": "体育运动",
+      "options": [
+        {
+          "value": "1",
+          "label": "体育运动"
+        },
+        {
+          "value": "2",
+          "label": "玩耍"
+        },
+        {
+          "value": "3",
+          "label": "骑自行车"
+        },
+        {
+          "value": "4",
+          "label": "野餐"
+        },
+        {
+          "value": "5",
+          "label": "其他"
+        }
+      ],
+      "stages": [
+        "stage1"
+      ]
+    },
+    "Mother_Education_Level": {
+      "key": "Mother_Education_Level",
+      "label_en": "Maternal education level",
+      "label_source": "母亲教育水平",
+      "reference_level": "1",
+      "reference_label": "小学及以下",
+      "options": [
+        {
+          "value": "1",
+          "label": "小学及以下"
+        },
+        {
+          "value": "2",
+          "label": "初中"
+        },
+        {
+          "value": "3",
+          "label": "高中/中专"
+        },
+        {
+          "value": "4",
+          "label": "大专"
+        },
+        {
+          "value": "5",
+          "label": "本科"
+        },
+        {
+          "value": "6",
+          "label": "研究生"
+        }
+      ],
+      "stages": [
+        "stage2"
+      ]
+    },
+    "Naps": {
+      "key": "Naps",
+      "label_en": "Nap habit",
+      "label_source": "孩子是否有午睡习惯",
+      "reference_level": "1",
+      "reference_label": "从不",
+      "options": [
+        {
+          "value": "1",
+          "label": "从不"
+        },
+        {
+          "value": "2",
+          "label": "偶尔"
+        },
+        {
+          "value": "3",
+          "label": "经常"
+        }
+      ],
+      "stages": [
+        "stage1"
+      ]
+    },
+    "Outdoor_Activity_Time": {
+      "key": "Outdoor_Activity_Time",
+      "label_en": "Usual outdoor activity time",
+      "label_source": "孩子通常在什么时间段进行户外活动?",
+      "reference_level": "1",
+      "reference_label": "早晨",
+      "options": [
+        {
+          "value": "1",
+          "label": "早晨"
+        },
+        {
+          "value": "2",
+          "label": "中午"
+        },
+        {
+          "value": "3",
+          "label": "下午"
+        },
+        {
+          "value": "4",
+          "label": "傍晚"
+        },
+        {
+          "value": "5",
+          "label": "晚上"
+        }
+      ],
+      "stages": [
+        "stage2"
+      ]
+    },
+    "Reading_Method": {
+      "key": "Reading_Method",
+      "label_en": "Reading method",
+      "label_source": "孩子通常通过什么方式阅读",
+      "reference_level": "1",
+      "reference_label": "纸质书籍为主",
+      "options": [
+        {
+          "value": "1",
+          "label": "纸质书籍为主"
+        },
+        {
+          "value": "2",
+          "label": "电子屏幕（手机、平板、电脑等）为主"
+        },
+        {
+          "value": "3",
+          "label": "都有，时间差不多"
+        }
+      ],
+      "stages": [
+        "stage2"
+      ]
+    },
+    "Reads_Writes_Continuously": {
+      "key": "Reads_Writes_Continuously",
+      "label_en": "Continuous reading/writing >1 h",
+      "label_source": "孩子是否有长时间阅读或写作的习惯（超过1小时不间断）",
+      "reference_level": "0",
+      "reference_label": "否",
+      "options": [
+        {
+          "value": "0",
+          "label": "否"
+        },
+        {
+          "value": "1",
+          "label": "是"
+        }
+      ],
+      "stages": [
+        "stage1"
+      ]
+    },
+    "School_Academic_Burden": {
+      "key": "School_Academic_Burden",
+      "label_en": "School academic burden",
+      "label_source": "您（家长）认为学校的课程负担如何",
+      "reference_level": "1",
+      "reference_label": "非常重",
+      "options": [
+        {
+          "value": "1",
+          "label": "非常重"
+        },
+        {
+          "value": "2",
+          "label": "较重"
+        },
+        {
+          "value": "3",
+          "label": "适中"
+        },
+        {
+          "value": "4",
+          "label": "较轻"
+        }
+      ],
+      "stages": [
+        "stage1"
+      ]
+    }
+  },
+  "stages": {
+    "stage1": {
+      "display_name": "Initial model: myopia-affected versus healthy",
+      "outcome_name": "Affected risk",
+      "variables": [
+        "Age",
+        "Gender",
+        "Daily_Study_Time",
+        "School_Academic_Burden",
+        "Naps",
+        "Reads_Writes_Continuously",
+        "Daily_Outdoor_Time",
+        "Frequency_Eye_Exercises",
+        "Frequent_Study_Stress_or_Anxiety",
+        "Main_Types_of_Outdoor_Activities"
+      ],
+      "variable_details": {
+        "Age": {
+          "reference_level": "1",
+          "reference_label": "≤6",
+          "coefficients": {
+            "2": 1.289867859198027,
+            "3": 2.549281785661484,
+            "4": 2.430979885352339,
+            "5": 3.689987061597473
+          }
+        },
+        "Gender": {
+          "reference_level": "0",
+          "reference_label": "男",
+          "coefficients": {
+            "1": 0.6069511275310323
+          }
+        },
+        "Daily_Study_Time": {
+          "reference_level": "1",
+          "reference_label": "＜3小时",
+          "coefficients": {
+            "2": 0.2995856916932146,
+            "3": 0.1451457950354532,
+            "4": 0.7882345674090493
+          }
+        },
+        "School_Academic_Burden": {
+          "reference_level": "1",
+          "reference_label": "非常重",
+          "coefficients": {
+            "2": 0.2139880385167191,
+            "3": -0.0522839041235556,
+            "4": -1.248808048658116
+          }
+        },
+        "Naps": {
+          "reference_level": "1",
+          "reference_label": "从不",
+          "coefficients": {
+            "2": -0.5039468490847585,
+            "3": -0.8400226522952102
+          }
+        },
+        "Reads_Writes_Continuously": {
+          "reference_level": "0",
+          "reference_label": "否",
+          "coefficients": {
+            "1": 0.08728393372512977
+          }
+        },
+        "Daily_Outdoor_Time": {
+          "reference_level": "1",
+          "reference_label": "<1小时",
+          "coefficients": {
+            "2": -0.3582480894125049,
+            "3": -0.9618523302199982,
+            "4": -1.190917628210158
+          }
+        },
+        "Frequency_Eye_Exercises": {
+          "reference_level": "1",
+          "reference_label": "0次",
+          "coefficients": {
+            "2": 0.0165986284485954,
+            "3": 0.218176656710804,
+            "4": 0.4446608721306159
+          }
+        },
+        "Frequent_Study_Stress_or_Anxiety": {
+          "reference_level": "0",
+          "reference_label": "从不",
+          "coefficients": {
+            "1": -0.1682229717267921,
+            "2": -0.253395787949253,
+            "3": -0.7040487896172654
+          }
+        },
+        "Main_Types_of_Outdoor_Activities": {
+          "reference_level": "1",
+          "reference_label": "体育运动",
+          "coefficients": {
+            "2": -0.1575540992715888,
+            "3": 0.2811091690192327,
+            "4": 21.32875474792623,
+            "5": -0.3016564708933487
+          }
+        }
+      }
+    },
+    "stage2": {
+      "display_name": "Conditional model: myopia–dry eye comorbidity versus myopia alone",
+      "outcome_name": "Conditional comorbidity risk",
+      "variables": [
+        "Age",
+        "Gender",
+        "Mother_Education_Level",
+        "Daily_Sleep_Duration",
+        "Daily_Study_Time",
+        "Outdoor_Activity_Time",
+        "Address",
+        "Reading_Method"
+      ],
+      "variable_details": {
+        "Age": {
+          "reference_level": "1",
+          "reference_label": "≤6",
+          "coefficients": {
+            "2": 0.6292466535185154,
+            "3": 0.8371811176863095,
+            "4": 1.21038362491465,
+            "5": 1.102130504388749
+          }
+        },
+        "Gender": {
+          "reference_level": "0",
+          "reference_label": "男",
+          "coefficients": {
+            "1": 0.4104744701738304
+          }
+        },
+        "Mother_Education_Level": {
+          "reference_level": "1",
+          "reference_label": "小学及以下",
+          "coefficients": {
+            "2": -0.382241410447506,
+            "3": -0.508002901211553,
+            "4": 0.5720592106861824,
+            "5": 0.5383843969469748,
+            "6": 1.288691631908415
+          }
+        },
+        "Daily_Sleep_Duration": {
+          "reference_level": "1",
+          "reference_label": "<6",
+          "coefficients": {
+            "2": -0.8635816405268936,
+            "3": -0.7913545452871869,
+            "4": -21.38350449182247
+          }
+        },
+        "Daily_Study_Time": {
+          "reference_level": "1",
+          "reference_label": "＜3小时",
+          "coefficients": {
+            "2": 0.6253021542771148,
+            "3": 0.7913501604897988,
+            "4": -0.1485312037556227
+          }
+        },
+        "Outdoor_Activity_Time": {
+          "reference_level": "1",
+          "reference_label": "早晨",
+          "coefficients": {
+            "2": -1.069692912055273,
+            "3": 0.2549935318759478,
+            "4": -0.6033627433264257,
+            "5": -0.4235611072631568
+          }
+        },
+        "Address": {
+          "reference_level": "1",
+          "reference_label": "城区",
+          "coefficients": {
+            "2": -0.4505771273873292,
+            "3": -0.3322433837424396
+          }
+        },
+        "Reading_Method": {
+          "reference_level": "1",
+          "reference_label": "纸质书籍为主",
+          "coefficients": {
+            "2": 0.9858953577394628,
+            "3": 0.3531007708402292
+          }
+        }
+      }
+    }
+  }
+}</script>
+<script>
+(function () {
+  "use strict";
+
+  var model = JSON.parse(document.getElementById("model-data").textContent);
+
+  var GROUPS = [
+    {
+      title: "基本信息",
+      eyebrow: "Participant profile",
+      variables: ["Age", "Gender", "Address", "Mother_Education_Level"]
+    },
+    {
+      title: "学习与近距离用眼",
+      eyebrow: "Study & near-work",
+      variables: [
+        "Daily_Study_Time",
+        "School_Academic_Burden",
+        "Reads_Writes_Continuously",
+        "Reading_Method",
+        "Frequent_Study_Stress_or_Anxiety"
+      ]
+    },
+    {
+      title: "睡眠与户外活动",
+      eyebrow: "Sleep & outdoor activity",
+      variables: [
+        "Daily_Sleep_Duration",
+        "Naps",
+        "Daily_Outdoor_Time",
+        "Outdoor_Activity_Time",
+        "Main_Types_of_Outdoor_Activities",
+        "Frequency_Eye_Exercises"
+      ]
+    }
+  ];
+
+  var LABELS = {
+    Age: "年龄",
+    Gender: "性别",
+    Address: "居住地区",
+    Mother_Education_Level: "母亲受教育程度",
+    Daily_Study_Time: "每日学习时间",
+    School_Academic_Burden: "学校学习负担",
+    Reads_Writes_Continuously: "是否连续读写超过1小时",
+    Reading_Method: "主要阅读方式",
+    Frequent_Study_Stress_or_Anxiety: "学习压力或焦虑频率",
+    Daily_Sleep_Duration: "每日睡眠时间",
+    Naps: "午睡习惯",
+    Daily_Outdoor_Time: "每日户外活动时间",
+    Outdoor_Activity_Time: "通常户外活动时段",
+    Main_Types_of_Outdoor_Activities: "主要户外活动类型",
+    Frequency_Eye_Exercises: "眼保健操频率"
+  };
+
+  var RESULT_COPY = {
+    0: {
+      title: "健康风险分层",
+      english: "Healthy risk stratum",
+      tone: "healthy",
+      symbol: "H",
+      note: "当前问卷特征未达到模型的近视相关风险分支阈值。"
+    },
+    1: {
+      title: "近视风险分层",
+      english: "Myopia-alone risk stratum",
+      tone: "myopia",
+      symbol: "M",
+      note: "模型进入近视相关分支，但未达到共病风险分支阈值。"
+    },
+    2: {
+      title: "近视–干眼共病风险分层",
+      english: "Myopia–dry eye comorbidity risk stratum",
+      tone: "comorbidity",
+      symbol: "C",
+      note: "模型同时达到近视相关分支和条件共病分支阈值，建议进一步规范检查。"
+    }
+  };
+
+  var ALL_VARIABLES = GROUPS.reduce(function (acc, group) {
+    return acc.concat(group.variables);
+  }, []);
+
+  var values = {};
+
+  function logistic(value) {
+    return 1 / (1 + Math.exp(-value));
+  }
+
+  function stageProbability(stageKey, input) {
+    var stage = model.stages[stageKey];
+    var linearPredictor = model.intercepts[stageKey];
+    stage.variables.forEach(function (variable) {
+      var coefficients = stage.variable_details[variable].coefficients;
+      var coefficient = coefficients[input[variable]];
+      linearPredictor += coefficient === undefined ? 0 : coefficient;
+    });
+    return logistic(linearPredictor);
+  }
+
+  function calculate(input) {
+    var stage1 = stageProbability("stage1", input);
+    var stage2 = stageProbability("stage2", input);
+    var code = stage1 < model.thresholds.stage1_affected
+      ? 0
+      : (stage2 >= model.thresholds.stage2_comorbidity_given_affected ? 2 : 1);
+    return {
+      stage1: stage1,
+      stage2: stage2,
+      probabilities: {
+        healthy: 1 - stage1,
+        myopia: stage1 * (1 - stage2),
+        comorbidity: stage1 * stage2
+      },
+      code: code
+    };
+  }
+
+  function percent(value) {
+    return (value * 100).toFixed(1) + "%";
+  }
+
+  function displayOption(variable, option) {
+    if (variable === "Main_Types_of_Outdoor_Activities" && option.value === "5") {
+      return "其他";
+    }
+    return option.label;
+  }
+
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) { node.className = className; }
+    if (text !== undefined && text !== null) { node.textContent = text; }
+    return node;
+  }
+
+  function buildForm() {
+    var root = document.getElementById("questionGroups");
+    root.innerHTML = "";
+
+    GROUPS.forEach(function (group, groupIndex) {
+      var fieldset = el("fieldset", "question-group");
+
+      var legend = document.createElement("legend");
+      legend.appendChild(el("span", null, String(groupIndex + 1).padStart(2, "0")));
+      var legendText = document.createElement("span");
+      legendText.appendChild(el("strong", null, group.title));
+      legendText.appendChild(el("small", null, group.eyebrow));
+      legend.appendChild(legendText);
+      fieldset.appendChild(legend);
+
+      var grid = el("div", "field-grid");
+      group.variables.forEach(function (variable, index) {
+        var config = model.variables[variable];
+
+        var label = document.createElement("label");
+        label.className = "field";
+        label.htmlFor = "field-" + variable;
+
+        var labelText = el("span", "field-label");
+        labelText.appendChild(el("span", null, LABELS[variable]));
+        labelText.appendChild(el("small", null, config.label_en));
+        label.appendChild(labelText);
+
+        var selectWrap = el("span", "select-wrap");
+        var select = document.createElement("select");
+        select.id = "field-" + variable;
+        select.setAttribute("aria-required", "true");
+        select.appendChild(new Option("请选择", ""));
+        config.options.forEach(function (option) {
+          select.appendChild(new Option(displayOption(variable, option), option.value));
+        });
+        select.value = values[variable] || "";
+        select.addEventListener("change", function () {
+          values[variable] = select.value;
+          clearResult();
+          hideMessage();
+          updateCompletion();
+        });
+        selectWrap.appendChild(select);
+        label.appendChild(selectWrap);
+
+        label.appendChild(el("span", "field-order", (groupIndex + 1) + "." + (index + 1)));
+        grid.appendChild(label);
+      });
+
+      fieldset.appendChild(grid);
+      root.appendChild(fieldset);
+    });
+  }
+
+  function updateCompletion() {
+    var completed = ALL_VARIABLES.filter(function (variable) {
+      return values[variable];
+    }).length;
+    document.getElementById("completionCount").textContent = completed + "/" + ALL_VARIABLES.length;
+    document.getElementById("completionBar").style.width = (completed / ALL_VARIABLES.length) * 100 + "%";
+  }
+
+  function showMessage(text) {
+    var node = document.getElementById("formMessage");
+    node.textContent = text;
+    node.hidden = false;
+  }
+
+  function hideMessage() {
+    var node = document.getElementById("formMessage");
+    node.textContent = "";
+    node.hidden = true;
+  }
+
+  function clearResult() {
+    document.getElementById("resultMount").innerHTML = "";
+  }
+
+  function renderResult(result) {
+    var copy = RESULT_COPY[result.code];
+    var mount = document.getElementById("resultMount");
+    mount.innerHTML = "";
+
+    var section = el("section", "result-panel " + copy.tone);
+    section.id = "result-panel";
+    section.setAttribute("aria-live", "polite");
+
+    var summary = el("div", "result-summary");
+    summary.appendChild(el("p", "kicker", "Risk-stratification result"));
+
+    var titleRow = el("div", "result-title-row");
+    titleRow.appendChild(el("div", "result-symbol", copy.symbol));
+    var titleText = document.createElement("div");
+    titleText.appendChild(el("h2", null, copy.title));
+    titleText.appendChild(el("p", null, copy.english));
+    titleRow.appendChild(titleText);
+    summary.appendChild(titleRow);
+
+    summary.appendChild(el("p", "result-note", copy.note));
+
+    var readouts = el("div", "stage-readouts");
+    [
+      ["初始模型概率", percent(result.stage1), "阈值 57.5%"],
+      ["条件模型概率", percent(result.stage2), "阈值 15.0%"]
+    ].forEach(function (row) {
+      var box = document.createElement("div");
+      box.appendChild(el("span", null, row[0]));
+      box.appendChild(el("strong", null, row[1]));
+      box.appendChild(el("small", null, row[2]));
+      readouts.appendChild(box);
+    });
+    summary.appendChild(readouts);
+    section.appendChild(summary);
+
+    var card = el("div", "probability-card");
+    card.appendChild(el("h3", null, "三分类组合概率"));
+    [
+      ["健康", result.probabilities.healthy, "bar-healthy"],
+      ["单纯近视", result.probabilities.myopia, "bar-myopia"],
+      ["近视–干眼共病", result.probabilities.comorbidity, "bar-comorbidity"]
+    ].forEach(function (row) {
+      var wrapper = el("div", "probability-row");
+      var head = document.createElement("div");
+      head.appendChild(el("span", null, row[0]));
+      head.appendChild(el("strong", null, percent(row[1])));
+      wrapper.appendChild(head);
+      var track = el("div", "probability-track");
+      var fill = document.createElement("i");
+      fill.className = row[2];
+      fill.style.width = percent(row[1]);
+      track.appendChild(fill);
+      wrapper.appendChild(track);
+      card.appendChild(wrapper);
+    });
+    card.appendChild(el("p", null, "概率之和为100%；最终分层采用顺序阈值规则，不按最大概率直接分类。"));
+    section.appendChild(card);
+
+    mount.appendChild(section);
+  }
+
+  document.getElementById("questionnaire").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var missing = ALL_VARIABLES.filter(function (variable) {
+      return !values[variable];
+    });
+    if (missing.length) {
+      showMessage("请先完成全部项目，当前还有 " + missing.length + " 项未填写。");
+      clearResult();
+      var first = document.getElementById("field-" + missing[0]);
+      if (first) { first.focus(); }
+      return;
+    }
+    hideMessage();
+    renderResult(calculate(values));
+    window.setTimeout(function () {
+      var panel = document.getElementById("result-panel");
+      if (panel) { panel.scrollIntoView({ behavior: "smooth" }); }
+    }, 50);
+  });
+
+  document.getElementById("resetButton").addEventListener("click", function () {
+    values = {};
+    buildForm();
+    clearResult();
+    hideMessage();
+    updateCompletion();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  buildForm();
+  updateCompletion();
+
+  // exposed only for offline reproducibility checks
+  window.__visionTriage = { model: model, calculate: calculate };
+})();
+</script>
+</body>
+</html>

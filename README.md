@@ -3,15 +3,15 @@
 面向 PhD 申请与研究介绍的单页学术主页，外加一份同源的 CV。
 纯静态、零外部依赖——无 CDN、无 Google Fonts、无跟踪脚本，中国大陆网络环境下可完整加载。
 
-- GitHub Pages 模板：<https://cosine753.github.io/>
-- 匿名试运行（Sites）：<https://echosine-net.cosine753.chatgpt.site>
-- 目标域名：<https://echosine.net/>（DNS 尚未从 Squarespace 切走）
+- 线上匿名主页：<https://echosine.net/>（GitHub Pages，纯静态）
+- 仓库：<https://github.com/Cosine753/Cosine753.github.io>
+- 旧 Sites 试运行：<https://echosine-net.cosine753.chatgpt.site>
 
 > **当前状态**
-> - `index.html` 仍是待填模板，本地直接打开会看到 `{{需你填写:姓名}}`。这是源文件，不是匿名线上版。
-> - 匿名版由 `build.mjs` 生成（姓名显示为 NA，保留 `noindex, nofollow`）。
-> - 预览匿名版：`powershell -ExecutionPolicy Bypass -File serve.ps1`，然后打开 `http://127.0.0.1:8765/`。
-> - 正式身份页仍按下面「快速上手」填 `myinfo.txt`；匿名试运行不要跑 `fill.ps1 -GoLive`。
+> - 公开站是匿名版：姓名显示为 NA，保留 `noindex, nofollow`。
+> - 托管在 GitHub Pages，不依赖 ChatGPT Sites / Codex。
+> - 计算器在 `/myopia-risk-calculator/`。
+> - 正式身份页仍可按下面「快速上手」填 `myinfo.txt`；匿名上线不要跑 `fill.ps1 -GoLive`。
 
 ---
 

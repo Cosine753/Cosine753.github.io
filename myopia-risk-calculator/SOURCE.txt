@@ -1,0 +1,12 @@
+Locked public calculator snapshot used by the anonymous echosine.net trial.
+
+Source: https://cosine753.github.io/myopia-risk-calculator/
+Upstream repository: https://github.com/Cosine753/myopia-risk-calculator
+Claimed version: v1.0.0
+SHA-256 (LF): DFF5204B9B9483880B2170B4CA1AA0015BC0CDF1CFDDF572FFD8089225C1A70C
+Bytes: 46404
+Retrieved: 2026-08-28
+License: MIT
+
+build.mjs verifies the hash before inlining this file. Do not replace it with
+an unreleased local copy; the homepage's v1.0.0 claim is tied to this snapshot.

@@ -4,41 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#123f43">
 <title>页面不存在 — 404</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23123f43'/%3E%3Ccircle cx='16' cy='16' r='7.5' fill='none' stroke='%23f4c8a8' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23f4c8a8'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/site.css">
-<style>
-  body { min-height: 100vh; min-height: 100svh; background: var(--teal); }
-  .error-page { min-height: 100vh; min-height: 100svh; display: grid; place-items: center; color: var(--white); overflow: hidden; }
-  .error-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(3rem, 10vw, 9rem); }
-  .error-code { margin: 0; color: var(--coral-soft); font-size: .72rem; font-weight: 750; letter-spacing: .2em; text-transform: uppercase; }
-  .error-page h1 { max-width: 8ch; margin: 1rem 0 0; font-family: Georgia, "Times New Roman", "Songti SC", serif; font-size: clamp(3rem, 7vw, 6rem); font-weight: 500; letter-spacing: -.055em; line-height: 1; }
-  .error-copy > p:not(.error-code) { max-width: 30rem; margin: 1.6rem 0 0; color: rgba(255,253,248,.67); }
-  .error-copy .button { width: fit-content; margin-top: 2rem; color: var(--teal); background: var(--coral-soft); border-color: var(--coral-soft); }
-  .error-page a:focus-visible { outline-color: var(--coral-soft); }
-  .error-eye { position: relative; width: min(38vw, 27rem); aspect-ratio: 1; border: 1px solid rgba(255,253,248,.25); border-radius: 50%; }
-  .error-eye::before, .error-eye::after { position: absolute; content: ""; border: 1px solid rgba(255,253,248,.22); border-radius: 50%; }
-  .error-eye::before { inset: 16%; }
-  .error-eye::after { inset: 34%; background: var(--coral); border: .8rem solid rgba(244,200,168,.25); box-shadow: 0 0 5rem rgba(200,102,60,.3); }
-  .error-eye span { position: absolute; top: 50%; left: 50%; z-index: 2; font-family: Georgia, serif; font-size: clamp(2.5rem, 6vw, 5rem); transform: translate(-50%,-50%); }
-  @media (max-width: 720px) {
-    .error-page { padding: 5rem 0; }
-    .error-grid { grid-template-columns: 1fr; }
-    .error-eye { width: min(78vw, 22rem); }
-  }
-</style>
+<meta name="theme-color" content="#1c2422">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c2422'/%3E%3Ccircle cx='16' cy='16' r='7.5' fill='none' stroke='%23f0c9b0' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23f0c9b0'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
-<main class="error-page">
-  <div class="shell error-grid">
-    <div class="error-copy">
-      <p class="error-code">Error / 404</p>
-      <h1>这条证据链断了。</h1>
-      <p>你访问的页面不存在，可能是链接已经失效，也可能是地址输入有误。</p>
-      <a class="button" href="/">返回研究主页 <span aria-hidden="true">→</span></a>
-    </div>
-    <div class="error-eye" aria-hidden="true"><span>404</span></div>
+<main class="error wrap">
+  <div>
+    <p class="kicker">Error / 404</p>
+    <h1>这条证据链断了。</h1>
+    <p>你访问的页面不存在，可能是链接已经失效，也可能是地址输入有误。</p>
+    <p class="links"><a href="/">返回研究主页</a></p>
   </div>
 </main>
 </body>

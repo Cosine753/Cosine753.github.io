@@ -1,13 +1,9 @@
-# https://cosine753.github.io/
+# https://echosine.net/
 #
-# cv.html 是 cv.pdf 的排版源文件，不该被单独收录。它靠自己页面里的
-#   <meta name="robots" content="noindex, nofollow">
-# 排除，这里**故意不写** Disallow：Disallow 会让爬虫根本不抓这个页面，
-# 也就永远读不到那行 noindex；一旦有外部链接指过来，反而可能被以
-# 「无摘要」的形式收进索引，比不拦还糟。要排除某页，就让它可被抓取、
-# 并在页面里说 noindex。
+# 匿名试运行：发现仍由页面里的 noindex 关闭。
+# 故意不写 Disallow，让爬虫能读到 noindex。
 
 User-agent: *
 Allow: /
 
-Sitemap: https://cosine753.github.io/sitemap.xml
+Sitemap: https://echosine.net/sitemap.xml
