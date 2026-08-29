@@ -69,6 +69,7 @@
       </div>
       <div class="iris" id="iris" aria-hidden="true">
         <span class="glow"></span>
+        <span class="ticks"></span>
         <span class="ring r1"></span>
         <span class="ring r2"></span>
         <span class="ring r3"></span>
@@ -93,22 +94,33 @@
         <h2>可核验的公开作品</h2>
       </header>
       <article class="work reveal">
-        <div class="work-top">
-          <p class="pill"><i></i> Completed · Live · v1.0.0</p>
-          <p class="en">Browser-based research demonstrator · MIT</p>
+        <div class="work-grid">
+          <div>
+            <div class="work-top">
+              <p class="pill"><i></i> Completed · Live · v1.0.0</p>
+              <p class="en">Browser-based research demonstrator · MIT</p>
+            </div>
+            <h3>儿童近视与干眼共病问卷风险分层计算器</h3>
+            <p class="lead">将锁定的两阶段 Logistic 路径转化为 15 项问卷的浏览器演示。所有计算都在本地完成，无后端、无外部依赖，也不写入浏览器存储。</p>
+            <ul class="notes">
+              <li><span>问题</span>把模型规则从论文描述转为可检查的交互流程。</li>
+              <li><span>实现</span>15 项问卷 · 两阶段路径 · 参数与阈值固定 · 纯前端。</li>
+              <li><span>一致性</span>201 例机构留出记录重算，网页与锁定输出的风险分层 0 例不一致。</li>
+            </ul>
+            <p class="bound"><strong>证据边界</strong> 这项核验只证明网页忠实复现锁定模型，不代表已经完成外部或前瞻性验证，也不作为诊断工具。</p>
+            <p class="hero-actions">
+              <a class="btn btn-solid" href="/myopia-risk-calculator/">运行交互演示</a>
+              <a class="btn btn-quiet" href="https://github.com/Cosine753/myopia-risk-calculator">检查源码</a>
+            </p>
+          </div>
+          <aside class="stat" aria-label="一致性核验">
+            <p class="stat-kicker">Hold-out consistency</p>
+            <p class="stat-num">0</p>
+            <p class="stat-label">分层不一致</p>
+            <p class="stat-sub">201 例机构留出记录重算</p>
+            <span class="gauge" aria-hidden="true"></span>
+          </aside>
         </div>
-        <h3>儿童近视与干眼共病问卷风险分层计算器</h3>
-        <p class="lead">将锁定的两阶段 Logistic 路径转化为 15 项问卷的浏览器演示。所有计算都在本地完成，无后端、无外部依赖，也不写入浏览器存储。</p>
-        <ul class="notes">
-          <li><span>问题</span>把模型规则从论文描述转为可检查的交互流程。</li>
-          <li><span>实现</span>15 项问卷 · 两阶段路径 · 参数与阈值固定 · 纯前端。</li>
-          <li><span>一致性</span>201 例机构留出记录重算，网页与锁定输出的风险分层 0 例不一致。</li>
-        </ul>
-        <p class="bound"><strong>证据边界</strong> 这项核验只证明网页忠实复现锁定模型，不代表已经完成外部或前瞻性验证，也不作为诊断工具。</p>
-        <p class="hero-actions">
-          <a class="btn btn-solid" href="/myopia-risk-calculator/">运行交互演示</a>
-          <a class="btn btn-quiet" href="https://github.com/Cosine753/myopia-risk-calculator">检查源码</a>
-        </p>
       </article>
     </div>
   </section>
@@ -162,16 +174,19 @@
       </header>
       <ol class="agenda">
         <li class="reveal">
+          <span class="no">01</span>
           <p class="en">Measure</p>
           <h3>测量“没有进入数据”的失败</h3>
           <p>建立采集失败、重拍原因与后续处置的最小记录集，估计被常规数据流程忽略的质量损失。</p>
         </li>
         <li class="reveal">
+          <span class="no">02</span>
           <p class="en">Trace</p>
           <h3>连接主张与原始记录</h3>
           <p>为数据、分析和稿件数字建立可追溯关系，让外部研究者能判断结论在哪一步获得支持、在哪一步失去证据。</p>
         </li>
         <li class="reveal">
+          <span class="no">03</span>
           <p class="en">Translate</p>
           <h3>把审计结果变成可执行规范</h3>
           <p>将发现的记录缺口转化为字段、原因编码和一致性声明，使方法改进能够进入真实临床与研究流程。</p>
@@ -205,10 +220,12 @@
       <div>
         <ol class="timeline">
           <li class="reveal">
+            <span class="dot"></span>
             <h3>个人经历暂不公开</h3>
             <p>本页仅用于测试域名与页面展示。</p>
           </li>
           <li class="reveal">
+            <span class="dot"></span>
             <h3>研究资料将在正式版补充</h3>
             <p>公开前将由本人复核。</p>
           </li>
@@ -219,7 +236,7 @@
   </section>
 
   <section class="contact" id="contact">
-    <div class="wrap">
+    <div class="wrap contact-panel">
       <p class="kicker light">06 / Contact</p>
       <h2>如果你也在追问<br>“证据够不够”，欢迎来信。</h2>
       <p>欢迎就眼科影像质量、临床证据核验、公开数据集审计与可复现研究流程交流。这个版本不公开邮箱，代码与公开产出在 GitHub。</p>

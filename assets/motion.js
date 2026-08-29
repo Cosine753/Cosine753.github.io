@@ -1,10 +1,23 @@
 (() => {
+  document.documentElement.classList.add("motion");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const header = document.getElementById("topbar");
   const iris = document.getElementById("iris");
+  const navLinks = [...document.querySelectorAll(".site-header nav a[href^='#']")];
+  const sections = navLinks
+    .map((link) => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
 
   const onScroll = () => {
     if (header) header.classList.toggle("is-scrolled", window.scrollY > 12);
+    const y = window.scrollY + window.innerHeight * 0.28;
+    let current = sections[0];
+    sections.forEach((section) => {
+      if (section.offsetTop <= y) current = section;
+    });
+    navLinks.forEach((link) => {
+      link.classList.toggle("is-on", current && link.getAttribute("href") === `#${current.id}`);
+    });
   };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -23,29 +36,38 @@
         }
       });
     },
-    { threshold: 0.16, rootMargin: "0px 0px -8% 0px" },
+    { threshold: 0.14, rootMargin: "0px 0px -6% 0px" },
   );
   document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
   if (!iris) return;
-  const setGaze = (x, y) => {
-    iris.style.setProperty("--mx", `${x * 22}px`);
-    iris.style.setProperty("--my", `${y * 16}px`);
+  let tx = 0;
+  let ty = 0;
+  let x = 0;
+  let y = 0;
+  const setTarget = (nx, ny) => {
+    tx = nx;
+    ty = ny;
   };
+  const tick = () => {
+    x += (tx - x) * 0.12;
+    y += (ty - y) * 0.12;
+    iris.style.setProperty("--mx", `${x * 24}px`);
+    iris.style.setProperty("--my", `${y * 18}px`);
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
   iris.addEventListener("pointermove", (event) => {
     const box = iris.getBoundingClientRect();
-    const x = (event.clientX - box.left) / box.width - 0.5;
-    const y = (event.clientY - box.top) / box.height - 0.5;
-    setGaze(x, y);
+    setTarget((event.clientX - box.left) / box.width - 0.5, (event.clientY - box.top) / box.height - 0.5);
   });
-  iris.addEventListener("pointerleave", () => setGaze(0, 0));
+  iris.addEventListener("pointerleave", () => setTarget(0, 0));
   window.addEventListener(
     "pointermove",
     (event) => {
       if (event.target.closest && event.target.closest(".iris")) return;
-      const x = event.clientX / window.innerWidth - 0.5;
-      const y = event.clientY / window.innerHeight - 0.5;
-      setGaze(x * 0.45, y * 0.35);
+      setTarget(event.clientX / window.innerWidth - 0.5, event.clientY / window.innerHeight - 0.5);
     },
     { passive: true },
   );
