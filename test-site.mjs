@@ -12,33 +12,53 @@ assert.equal(home.status, 200);
 assert.match(home.headers.get("content-type") ?? "", /^text\/html/i);
 assert.equal(home.headers.get("x-robots-tag"), "noindex, nofollow");
 assert.match(home.headers.get("permissions-policy") ?? "", /camera=\(\)/);
+assert.equal(home.headers.get("referrer-policy"), "no-referrer");
+assert.equal(home.headers.get("x-frame-options"), "DENY");
+assert.equal(home.headers.get("strict-transport-security"), "max-age=31536000");
+assert.match(home.headers.get("content-security-policy") ?? "", /script-src 'self'/);
 
 const html = await home.text();
 assert.match(html, /<title>NA — 眼科临床研究/);
 assert.match(html, /Anonymous preview/);
 assert.match(html, /https:\/\/echosine\.net\//);
+assert.match(html, /property="og:image"/);
+assert.match(html, /viewport-fit=cover/);
+assert.match(html, /<main id="main" tabindex="-1">/);
+assert.match(html, /class="to-top"/);
 assert.match(html, /href="\/myopia-risk-calculator\/"/);
 assert.match(html, /<nav class="site-nav"/);
 for (const section of ["about", "work", "research", "agenda", "methods", "background", "contact"]) {
   assert.match(html, new RegExp(`href="#${section}"`), section);
   assert.match(html, new RegExp(`id="${section}"`), section);
 }
-assert.match(html, /href="\/assets\/site\.css"/);
-assert.match(html, /src="\/assets\/motion\.js"/);
+assert.match(html, /href="\/assets\/site\.css\?v=6"/);
+assert.match(html, /src="\/assets\/motion\.js\?v=5"/);
+assert.match(html, /kicker-rule/);
 assert.doesNotMatch(html, /https:\/\/echosine\.net\/myopia-risk-calculator\//);
 assert.doesNotMatch(html, /\{\{需你填写:/);
 assert.doesNotMatch(html, /mailto:/i);
+assert.doesNotMatch(html, /rel="me"/i);
 assert.doesNotMatch(html, /application\/ld\+json/i);
 assert.equal((html.match(/GitHub 联系/g) ?? []).length, 0);
 
 const css = await fetchPath("/assets/site.css");
 assert.equal(css.status, 200);
 assert.match(css.headers.get("content-type") ?? "", /^text\/css/i);
+const cssBody = await css.text();
+assert.match(cssBody, /@media \(min-width: 901px\)/);
+assert.match(cssBody, /\.kicker-rule/);
 
 const motion = await fetchPath("/assets/motion.js");
 assert.equal(motion.status, 200);
 assert.match(motion.headers.get("content-type") ?? "", /^application\/javascript/i);
-assert.match(await motion.text(), /IntersectionObserver/);
+const motionBody = await motion.text();
+assert.match(motionBody, /IntersectionObserver/);
+assert.match(motionBody, /revealAll/);
+
+const og = await fetchPath("/og.png");
+assert.equal(og.status, 200);
+assert.match(og.headers.get("content-type") ?? "", /^image\/png/i);
+assert.ok((await og.arrayBuffer()).byteLength > 1000);
 
 const deployedCalculator = await readFile(
   new URL("./myopia-risk-calculator/index.html", import.meta.url),
@@ -59,6 +79,7 @@ for (const path of [
   const page = await fetchPath(path);
   assert.equal(page.status, 200, path);
   assert.equal(page.headers.get("x-robots-tag"), "noindex, nofollow", path);
+  assert.match(page.headers.get("content-security-policy") ?? "", /unsafe-inline/);
   const body = await page.text();
   assert.match(body, /Vision Triage/, path);
   assert.match(body, /noindex, nofollow/, path);

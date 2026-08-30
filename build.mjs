@@ -21,6 +21,8 @@ const css = await readText("assets/site.css");
 const motion = await readText("assets/motion.js");
 let notFound = await readText("404.html");
 const calculatorRaw = await readText("third_party/myopia-risk-calculator/index.html");
+const ogBytes = await readFile(new URL("og.png", root));
+const ogBase64 = ogBytes.toString("base64");
 
 const calculatorSha = createHash("sha256")
   .update(calculatorRaw.replace(/\r\n/g, "\n").replace(/\r/g, "\n"))
@@ -42,8 +44,6 @@ html = html.replaceAll(
 html = html
   .replace(/<!--[^]*?-->/g, "")
   .replace(/\n<script type="application\/ld\+json">[^]*?<\/script>\n/i, "\n")
-  .replace(/<meta property="og:image"[^>]*>\s*/g, "")
-  .replace(/<meta property="og:image:(?:width|height|alt)"[^>]*>\s*/g, "")
   .replaceAll("https://cosine753.github.io/", "https://echosine.net/")
   .replace(
     /\n\s*<li><a class="button button-secondary" href="mailto:\{\{需你填写:邮箱\}\}">邮件联系 <span aria-hidden="true">↗<\/span><\/a><\/li>/,
@@ -51,7 +51,7 @@ html = html
   )
   .replace(
     /<a class="contact-mail" href="mailto:\{\{需你填写:邮箱\}\}">\s*<span>\{\{需你填写:邮箱\}\}<\/span>\s*<i aria-hidden="true">↗<\/i>\s*<\/a>/,
-    '<a class="contact-mail" href="https://github.com/Cosine753" rel="me"><span>github.com/Cosine753</span><i aria-hidden="true">↗</i></a>',
+    '<a class="contact-mail" href="https://github.com/Cosine753" rel="noopener noreferrer" referrerpolicy="no-referrer"><span>github.com/Cosine753</span><i aria-hidden="true">↗</i></a>',
   );
 
 const replacements = new Map([
@@ -92,6 +92,9 @@ if (/mailto:/i.test(html)) {
 if (!html.includes('href="/myopia-risk-calculator/"')) {
   throw new Error("Anonymous build must keep the calculator demo on this host.");
 }
+if (!html.includes('property="og:image"')) {
+  throw new Error("Anonymous build must keep the social preview image metadata.");
+}
 if ((html.match(/github\.com\/Cosine753/g) ?? []).length < 1) {
   throw new Error("Anonymous build dropped the GitHub contact path.");
 }
@@ -107,12 +110,14 @@ const motion = ${JSON.stringify(motion)};
 const robots = ${JSON.stringify(robots)};
 const calculator = ${JSON.stringify(calculator)};
 const notFound = ${JSON.stringify(notFound)};
+const og = Uint8Array.from(atob(${JSON.stringify(ogBase64)}), (char) => char.charCodeAt(0));
 
 const files = {
   "/": { body: home, type: "text/html; charset=utf-8" },
   "/index.html": { body: home, type: "text/html; charset=utf-8" },
   "/assets/site.css": { body: css, type: "text/css; charset=utf-8", cache: true },
   "/assets/motion.js": { body: motion, type: "application/javascript; charset=utf-8", cache: true },
+  "/og.png": { body: og, type: "image/png", cache: true },
   "/robots.txt": { body: robots, type: "text/plain; charset=utf-8" },
   "/myopia-risk-calculator": { body: calculator, type: "text/html; charset=utf-8" },
   "/myopia-risk-calculator/": { body: calculator, type: "text/html; charset=utf-8" },
@@ -129,14 +134,20 @@ export default {
 
     const route = files[url.pathname];
     const selected = route ?? { body: notFound, type: "text/html; charset=utf-8" };
+    const calculatorRoute = url.pathname.startsWith("/myopia-risk-calculator");
     const headers = new Headers({
       "Content-Type": selected.type,
       "X-Content-Type-Options": "nosniff",
-      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Referrer-Policy": "no-referrer",
       "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
       "X-Robots-Tag": "noindex, nofollow",
       "Cache-Control": selected.cache ? "public, max-age=3600" : "no-store",
+      "Content-Security-Policy": calculatorRoute
+        ? "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"
+        : "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'",
+      "X-Frame-Options": "DENY",
     });
+    if (url.protocol === "https:") headers.set("Strict-Transport-Security", "max-age=31536000");
     return new Response(method === "HEAD" ? null : selected.body, {
       status: route ? 200 : 404,
       headers,
@@ -154,6 +165,7 @@ await writeStatic("404.html", notFound);
 await writeStatic("robots.txt", robots);
 await writeStatic("assets/site.css", css);
 await writeStatic("assets/motion.js", motion);
+await writeFile(new URL("./og.png", staticRoot), ogBytes);
 await writeStatic("myopia-risk-calculator/index.html", calculator);
 
 console.log("Built anonymous echosine.net trial site.");

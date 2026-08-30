@@ -3,13 +3,33 @@
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const header = document.getElementById("topbar");
   const iris = document.getElementById("iris");
+  const nav = document.querySelector(".site-nav");
+  const topButton = document.querySelector(".to-top");
+  const skip = document.querySelector(".skip");
   const navLinks = [...document.querySelectorAll(".site-nav a[href^='#']")];
   const sections = navLinks
     .map((link) => document.querySelector(link.getAttribute("href")))
     .filter(Boolean);
 
+  const keepActiveNavVisible = () => {
+    if (!nav || nav.scrollWidth <= nav.clientWidth) return;
+    const active = navLinks.find((link) => link.classList.contains("is-on"));
+    const item = active?.closest("li") ?? active;
+    if (!item) return;
+    const margin = 12;
+    const left = item.offsetLeft;
+    const right = left + item.offsetWidth;
+    const visibleLeft = nav.scrollLeft + margin;
+    const visibleRight = nav.scrollLeft + nav.clientWidth - margin;
+    if (left < visibleLeft) nav.scrollLeft = Math.max(0, left - margin);
+    else if (right > visibleRight) nav.scrollLeft = Math.min(nav.scrollWidth - nav.clientWidth, right - nav.clientWidth + margin);
+  };
+
   const updateScrollState = () => {
     if (header) header.classList.toggle("is-scrolled", window.scrollY > 12);
+    const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const progress = Math.max(0, Math.min(1, window.scrollY / maxScroll));
+    document.documentElement.style.setProperty("--scroll-progress", progress.toFixed(4));
     const y = window.scrollY + window.innerHeight * 0.28;
     let current = sections[0];
     sections.forEach((section) => {
@@ -24,6 +44,13 @@
       if (active) link.setAttribute("aria-current", "location");
       else link.removeAttribute("aria-current");
     });
+    keepActiveNavVisible();
+    if (topButton) {
+      const visible = window.scrollY > 320;
+      topButton.classList.toggle("is-visible", visible);
+      topButton.setAttribute("aria-hidden", String(!visible));
+      topButton.tabIndex = visible ? 0 : -1;
+    }
   };
 
   let scrollFrame = 0;
@@ -37,9 +64,30 @@
   updateScrollState();
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("hashchange", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+
+  topButton?.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  });
+  skip?.addEventListener("click", (event) => {
+    event.preventDefault();
+    const target = document.getElementById("main");
+    if (!target) return;
+    history.replaceState(null, "", "#main");
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    try {
+      target.focus({ preventScroll: true });
+    } catch {
+      target.focus();
+    }
+    updateScrollState();
+  });
+
+  const reveals = [...document.querySelectorAll(".reveal")];
+  const revealAll = () => reveals.forEach((el) => el.classList.add("in"));
 
   if (reduce) {
-    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+    revealAll();
     return;
   }
 
@@ -55,11 +103,14 @@
       },
       { threshold: 0.14, rootMargin: "0px 0px -6% 0px" },
     );
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    reveals.forEach((el) => io.observe(el));
   } else {
     // Older browsers should still show the content when the enhancement is unavailable.
-    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+    revealAll();
   }
+
+  // Keep full-page captures and print previews useful even when no scrolling occurs.
+  window.setTimeout(revealAll, 1500);
 
   if (!iris) return;
   let tx = 0;
