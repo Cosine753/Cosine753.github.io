@@ -10,12 +10,20 @@ const home = await fetchPath("/");
 assert.equal(home.status, 200);
 assert.match(home.headers.get("content-type") ?? "", /^text\/html/i);
 assert.equal(home.headers.get("x-robots-tag"), "noindex, nofollow");
+assert.match(home.headers.get("permissions-policy") ?? "", /camera=\(\)/);
 
 const html = await home.text();
 assert.match(html, /<title>NA — 眼科临床研究/);
 assert.match(html, /Anonymous preview/);
 assert.match(html, /https:\/\/echosine\.net\//);
 assert.match(html, /href="\/myopia-risk-calculator\/"/);
+assert.match(html, /<nav class="site-nav"/);
+for (const section of ["about", "work", "research", "agenda", "methods", "background", "contact"]) {
+  assert.match(html, new RegExp(`href="#${section}"`), section);
+  assert.match(html, new RegExp(`id="${section}"`), section);
+}
+assert.match(html, /href="\/assets\/site\.css"/);
+assert.match(html, /src="\/assets\/motion\.js"/);
 assert.doesNotMatch(html, /https:\/\/echosine\.net\/myopia-risk-calculator\//);
 assert.doesNotMatch(html, /\{\{需你填写:/);
 assert.doesNotMatch(html, /mailto:/i);
@@ -25,6 +33,11 @@ assert.equal((html.match(/GitHub 联系/g) ?? []).length, 0);
 const css = await fetchPath("/assets/site.css");
 assert.equal(css.status, 200);
 assert.match(css.headers.get("content-type") ?? "", /^text\/css/i);
+
+const motion = await fetchPath("/assets/motion.js");
+assert.equal(motion.status, 200);
+assert.match(motion.headers.get("content-type") ?? "", /^application\/javascript/i);
+assert.match(await motion.text(), /IntersectionObserver/);
 
 const robots = await fetchPath("/robots.txt");
 assert.equal(robots.status, 200);

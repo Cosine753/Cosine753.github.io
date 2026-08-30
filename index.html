@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="color-scheme" content="light dark">
 <title>NA — 眼科临床研究 · 临床证据可核验性</title>
 <meta name="description" content="匿名个人学术主页。研究兴趣：眼科影像采集质量与记录规范、临床证据的可核验性与可复现性、公开眼科数据集的参考标准可靠性。">
 <meta name="theme-color" content="#123f43">
@@ -15,10 +17,16 @@
 <meta property="og:title" content="NA — 眼科临床研究 · 临床证据可核验性">
 <meta property="og:description" content="从记录到证据，再到可以被检验的临床主张。">
 <meta property="og:image" content="https://echosine.net/og.png">
+<meta property="og:image:alt" content="匿名眼科临床研究主页的预览图">
+<meta property="og:site_name" content="echosine.net">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NA — 眼科临床研究 · 临床证据可核验性">
+<meta name="twitter:description" content="从记录到证据，再到可以被检验的临床主张。">
+<meta name="twitter:image" content="https://echosine.net/og.png">
+<meta name="twitter:image:alt" content="匿名眼科临床研究主页的预览图">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23123f43'/%3E%3Ccircle cx='16' cy='16' r='7.5' fill='none' stroke='%23f4c8a8' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23f4c8a8'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
@@ -30,21 +38,26 @@
       <span>NA</span>
       <small>Ophthalmic research</small>
     </a>
-    <nav aria-label="页内导航">
-      <a href="#work">作品</a>
-      <a href="#research">研究</a>
-      <a href="#agenda">方向</a>
-      <a href="#contact">联系</a>
+    <nav class="site-nav" aria-label="页内导航">
+      <ul>
+        <li><a href="#about">关于</a></li>
+        <li><a href="#work">作品</a></li>
+        <li><a href="#research">研究</a></li>
+        <li><a href="#agenda">方向</a></li>
+        <li><a href="#methods">方法</a></li>
+        <li><a href="#background">经历</a></li>
+        <li><a href="#contact">联系</a></li>
+      </ul>
     </nav>
   </div>
 </header>
 
 <main id="main">
-  <section class="hero" id="about">
+  <section class="hero" id="about" aria-labelledby="page-title">
     <div class="wrap hero-grid">
       <div class="hero-copy">
         <p class="kicker light"><span></span> PhD application portfolio</p>
-        <h1>NA <span>Anonymous preview</span></h1>
+        <h1 id="page-title">NA <span>Anonymous preview</span></h1>
         <p class="role">眼科临床研究 · 临床证据可核验性</p>
         <p class="thesis">让临床主张回到它所依赖的记录。</p>
         <p class="lede">我研究眼科影像采集与临床证据中的记录缺口：哪些关键信息没有被留下，现有公开材料究竟能支撑多强的结论，以及如何把核验变成可重复执行的研究流程。</p>
@@ -64,7 +77,7 @@
         </dl>
         <p class="hero-actions">
           <a class="btn btn-solid" href="#work">查看代表工作</a>
-          <a class="btn btn-ghost" href="https://github.com/Cosine753" rel="me">GitHub</a>
+          <a class="btn btn-ghost" href="https://github.com/Cosine753" target="_blank" rel="me noopener noreferrer">GitHub</a>
         </p>
       </div>
       <div class="iris" id="iris" aria-hidden="true">
@@ -87,11 +100,11 @@
     <li class="reveal"><strong>03</strong><span>优先检验自己</span>证据推翻观点时，照实改写并保留轨迹。</li>
   </ol>
 
-  <section class="band" id="work">
+  <section class="band" id="work" aria-labelledby="work-title">
     <div class="wrap">
       <header class="section-h">
         <p>01 / Selected work</p>
-        <h2>可核验的公开作品</h2>
+        <h2 id="work-title">可核验的公开作品</h2>
       </header>
       <article class="work reveal">
         <div class="work-grid">
@@ -110,7 +123,7 @@
             <p class="bound"><strong>证据边界</strong> 这项核验只证明网页忠实复现锁定模型，不代表已经完成外部或前瞻性验证，也不作为诊断工具。</p>
             <p class="hero-actions">
               <a class="btn btn-solid" href="/myopia-risk-calculator/">运行交互演示</a>
-              <a class="btn btn-quiet" href="https://github.com/Cosine753/myopia-risk-calculator">检查源码</a>
+              <a class="btn btn-quiet" href="https://github.com/Cosine753/myopia-risk-calculator" target="_blank" rel="noopener noreferrer">检查源码</a>
             </p>
           </div>
           <aside class="stat" aria-label="一致性核验">
@@ -125,11 +138,11 @@
     </div>
   </section>
 
-  <section class="band alt" id="research">
+  <section class="band alt" id="research" aria-labelledby="research-title">
     <div class="wrap">
       <header class="section-h">
         <p>02 / Research</p>
-        <h2>研究兴趣</h2>
+        <h2 id="research-title">研究兴趣</h2>
         <p class="section-lead">围绕一条主线展开：从信息如何产生，到证据能够支持什么。</p>
       </header>
       <ol class="research">
@@ -165,11 +178,11 @@
     </div>
   </section>
 
-  <section class="band ink" id="agenda">
+  <section class="band ink" id="agenda" aria-labelledby="agenda-title">
     <div class="wrap">
       <header class="section-h light">
         <p>03 / PhD research agenda</p>
-        <h2>博士阶段想继续推进的问题</h2>
+        <h2 id="agenda-title">博士阶段想继续推进的问题</h2>
         <p class="section-lead">从一次影像采集为什么失败，到一项临床主张为什么可信：把零散的记录缺口连成一条可测量、可复核、可改进的证据链。</p>
       </header>
       <ol class="agenda">
@@ -195,11 +208,11 @@
     </div>
   </section>
 
-  <section class="band" id="methods">
+  <section class="band" id="methods" aria-labelledby="methods-title">
     <div class="wrap">
       <header class="section-h">
         <p>04 / Methods</p>
-        <h2>方法与能力</h2>
+        <h2 id="methods-title">方法与能力</h2>
       </header>
       <ul class="methods">
         <li class="reveal"><strong>可复现实现与版本固定</strong><span>将参数、阈值与模型路径固定到可运行版本；保持页面自包含，并用锁定输出检查实现一致性。</span><em class="on">已有公开作品</em></li>
@@ -211,11 +224,11 @@
     </div>
   </section>
 
-  <section class="band alt" id="background">
+  <section class="band alt" id="background" aria-labelledby="background-title">
     <div class="wrap split">
       <header class="section-h">
         <p>05 / Background</p>
-        <h2>教育与经历</h2>
+        <h2 id="background-title">教育与经历</h2>
       </header>
       <div>
         <ol class="timeline">
@@ -235,13 +248,13 @@
     </div>
   </section>
 
-  <section class="contact" id="contact">
+  <section class="contact" id="contact" aria-labelledby="contact-title">
     <div class="wrap contact-panel">
       <p class="kicker light">06 / Contact</p>
-      <h2>如果你也在追问<br>“证据够不够”，欢迎来信。</h2>
-      <p>欢迎就眼科影像质量、临床证据核验、公开数据集审计与可复现研究流程交流。这个版本不公开邮箱，代码与公开产出在 GitHub。</p>
+      <h2 id="contact-title">如果你也在追问<br>“证据够不够”，欢迎交流。</h2>
+      <p>欢迎就眼科影像质量、临床证据核验、公开数据集审计与可复现研究流程交流。这个匿名版本不公开邮箱，代码与公开产出在 GitHub。</p>
       <p class="hero-actions">
-        <a class="btn btn-solid" href="https://github.com/Cosine753" rel="me">github.com/Cosine753</a>
+        <a class="btn btn-solid" href="https://github.com/Cosine753" target="_blank" rel="me noopener noreferrer">github.com/Cosine753</a>
       </p>
     </div>
   </section>
@@ -253,7 +266,7 @@
     <p>© 2026 · 纯静态 · 无跟踪 · 更新于 <time datetime="2026-08">2026-08</time></p>
   </div>
 </footer>
-<script src="assets/motion.js" defer></script>
+<script src="/assets/motion.js" defer></script>
 </body>
 </html>
 

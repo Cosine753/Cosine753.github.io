@@ -18,6 +18,7 @@ const writeStatic = async (relativePath, body) => {
 
 let html = await readText("index.html");
 const css = await readText("assets/site.css");
+const motion = await readText("assets/motion.js");
 let notFound = await readText("404.html");
 const calculatorRaw = await readText("third_party/myopia-risk-calculator/index.html");
 
@@ -102,6 +103,7 @@ const robots = `User-agent: *\nAllow: /\n\n# Anonymous trial: discovery remains 
 
 const worker = `const home = ${JSON.stringify(html)};
 const css = ${JSON.stringify(css)};
+const motion = ${JSON.stringify(motion)};
 const robots = ${JSON.stringify(robots)};
 const calculator = ${JSON.stringify(calculator)};
 const notFound = ${JSON.stringify(notFound)};
@@ -110,6 +112,7 @@ const files = {
   "/": { body: home, type: "text/html; charset=utf-8" },
   "/index.html": { body: home, type: "text/html; charset=utf-8" },
   "/assets/site.css": { body: css, type: "text/css; charset=utf-8", cache: true },
+  "/assets/motion.js": { body: motion, type: "application/javascript; charset=utf-8", cache: true },
   "/robots.txt": { body: robots, type: "text/plain; charset=utf-8" },
   "/myopia-risk-calculator": { body: calculator, type: "text/html; charset=utf-8" },
   "/myopia-risk-calculator/": { body: calculator, type: "text/html; charset=utf-8" },
@@ -130,6 +133,7 @@ export default {
       "Content-Type": selected.type,
       "X-Content-Type-Options": "nosniff",
       "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
       "X-Robots-Tag": "noindex, nofollow",
       "Cache-Control": selected.cache ? "public, max-age=3600" : "no-store",
     });
@@ -149,6 +153,7 @@ await writeStatic("index.html", html);
 await writeStatic("404.html", notFound);
 await writeStatic("robots.txt", robots);
 await writeStatic("assets/site.css", css);
+await writeStatic("assets/motion.js", motion);
 await writeStatic("myopia-risk-calculator/index.html", calculator);
 
 console.log("Built anonymous echosine.net trial site.");

@@ -26,6 +26,14 @@ Add-Type -AssemblyName System.Drawing
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $here
 if (-not $Out) { $Out = Join-Path $root 'og.png' }
+$siteHost = 'echosine.net'
+$cnamePath = Join-Path $root 'CNAME'
+if (Test-Path $cnamePath) {
+    $candidateHost = (Get-Content $cnamePath -Raw -Encoding UTF8).Trim().ToLowerInvariant()
+    if ($candidateHost -match '^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$') {
+        $siteHost = $candidateHost
+    }
+}
 
 # ---------- 没给姓名就从 index.html 里读 ----------
 if (-not $Name) {
@@ -36,10 +44,13 @@ if (-not $Name) {
         if ($h1.Success) {
             $inner = $h1.Groups[1].Value
             $enM   = [regex]::Match($inner, '(?s)<span[^>]*class="en"[^>]*>(.*?)</span>')
+            if (-not $enM.Success) {
+                $enM = [regex]::Match($inner, '(?s)<span[^>]*>(.*?)</span>')
+            }
             if ($enM.Success -and -not $NameEn) {
                 $NameEn = [regex]::Replace($enM.Groups[1].Value, '(?s)<[^>]+>', '').Trim()
             }
-            $stripped = [regex]::Replace($inner, '(?s)<span[^>]*class="en".*?</span>', '')
+            $stripped = [regex]::Replace($inner, '(?s)<span[^>]*>.*?</span>', '')
             $Name     = [regex]::Replace($stripped, '(?s)<[^>]+>', '').Trim()
         }
     }
@@ -47,6 +58,10 @@ if (-not $Name) {
 # 读回来的要是还带着占位符，就当作「没填」
 if ($Name   -like '*需你填写*') { $Name   = '' }
 if ($NameEn -like '*需你填写*') { $NameEn = '' }
+if ($Name -eq 'NA' -or $Name -match '(?i)anonymous preview') {
+    $Name = ''
+    if (-not $NameEn -or $NameEn -match '(?i)anonymous preview') { $NameEn = '' }
+}
 
 # ---------- 字体：挑一个系统里真的装了的 ----------
 function Get-Family {
@@ -154,7 +169,7 @@ try {
 
     # ---------- 页脚网址 ----------
     $fUrl = Track (New-Fnt $famLat 28 'Regular')
-    $g.DrawString('cosine753.github.io', $fUrl, $brDim, [single]$M, [single]($H - 92), $fmt)
+    $g.DrawString($siteHost, $fUrl, $brDim, [single]$M, [single]($H - 92), $fmt)
 
     $g.Flush()
     $bmp.Save($Out, [System.Drawing.Imaging.ImageFormat]::Png)
@@ -166,8 +181,8 @@ finally {
 }
 
 $size = [math]::Round((Get-Item $Out).Length / 1KB, 1)
-$who  = if ($Name) { "含姓名「$Name」" } else { "无姓名版（index.html 里还是占位符）" }
+$who  = if ($Name) { "含姓名「$Name」" } else { "匿名版（未公开姓名）" }
 Write-Host "已生成 $Out —— 1731x909，$size KB，$who" -ForegroundColor Green
 if (-not $Name) {
-    Write-Host "  填完占位符后 fill.ps1 会自动重新生成一版带姓名的。" -ForegroundColor DarkGray
+    Write-Host "  之后填写姓名并运行 fill.ps1，可自动重新生成带姓名的版本。" -ForegroundColor DarkGray
 }
