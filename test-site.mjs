@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 
 const workerUrl = new URL(`./dist/server/index.js?v=${Date.now()}`, import.meta.url);
 const { default: worker } = await import(workerUrl.href);
@@ -38,6 +39,13 @@ const motion = await fetchPath("/assets/motion.js");
 assert.equal(motion.status, 200);
 assert.match(motion.headers.get("content-type") ?? "", /^application\/javascript/i);
 assert.match(await motion.text(), /IntersectionObserver/);
+
+const deployedCalculator = await readFile(
+  new URL("./myopia-risk-calculator/index.html", import.meta.url),
+  "utf8",
+);
+assert.match(deployedCalculator, /<meta name="robots" content="noindex, nofollow" \/>/);
+assert.doesNotMatch(deployedCalculator, /content="index,\s*follow"/i);
 
 const robots = await fetchPath("/robots.txt");
 assert.equal(robots.status, 200);
