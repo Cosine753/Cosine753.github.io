@@ -247,8 +247,8 @@ a:focus-visible, button:focus-visible, select:focus-visible, summary:focus-visib
     "mobile header layout",
   );
   page = page.replace("  .site-header { height: 72px; }", "  /* mobile header sizing is defined above */");
-  page = page.replace("  .header-badges span:not(:last-child) { display: none; }\n", "");
-  page = page.replace("  .calculator-nav a:nth-child(2) { display: none; }\n", "");
+  page = page.replace(/  \.header-badges span:not\(:last-child\) \{ display: none; \}\r?\n/, "");
+  page = page.replace(/  \.calculator-nav a:nth-child\(2\) \{ display: none; \}\r?\n/, "");
 
   page = replaceCalculator(
     page,

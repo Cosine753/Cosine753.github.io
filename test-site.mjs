@@ -101,7 +101,7 @@ const generatedStaticDemo = await readFile(
 assert.equal(normalizeHtml(generatedStaticDemo), normalizeHtml(deployedDemo));
 
 const probabilityFunctionSource = deployedDemo.match(
-  /function probabilityDisplay\(result\) \{[^]*?\n  \}(?=\n\n  function displayOption)/,
+  /function probabilityDisplay\(result\) \{[^]*?\r?\n  \}(?=[\r\n]+  function displayOption)/,
 )?.[0];
 assert.ok(probabilityFunctionSource, "generated demo must expose the display rounding helper");
 const probabilityDisplay = Function(`${probabilityFunctionSource}; return probabilityDisplay;`)();
