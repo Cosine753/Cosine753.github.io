@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'; object-src 'none'">
+<title>隐私与公开边界 · echosine.net</title>
+<meta name="description" content="echosine.net 匿名试运行版本的隐私说明、数据流向与公开边界。">
+<meta name="theme-color" content="#123f43">
+<link rel="canonical" href="https://echosine.net/privacy.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:url" content="https://echosine.net/privacy.html">
+<meta property="og:title" content="隐私与公开边界 · echosine.net">
+<meta property="og:description" content="匿名试运行版本的隐私说明、数据流向与公开边界。">
+<meta property="og:image" content="https://echosine.net/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="echosine.net 匿名隐私与公开边界说明页预览图">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23123f43'/%3E%3Ccircle cx='16' cy='16' r='7.5' fill='none' stroke='%23f4c8a8' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23f4c8a8'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/site.css?v=8">
+</head>
+<body class="privacy-page">
+<a class="skip" href="#main">跳到主要内容</a>
+
+<header class="site-header" id="topbar">
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label="返回首页">
+      <span class="mark" aria-hidden="true"></span>
+      <span>NA</span>
+      <small><span lang="en">Ophthalmic research</span><span class="domain">echosine.net</span></small>
+    </a>
+    <nav class="site-nav" aria-label="站点导航">
+      <ul>
+        <li><a href="/">主页</a></li>
+        <li><a href="/work/myopia-risk-calculator/">代表工作</a></li>
+        <li><a href="/status.html">项目状态</a></li>
+        <li><a href="/demo/">运行演示</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <section class="privacy-hero" aria-labelledby="page-title">
+    <div class="wrap privacy-hero-inner">
+      <p class="kicker light"><span class="kicker-rule" aria-hidden="true"></span> <span lang="en">Privacy / Boundary</span></p>
+      <h1 id="page-title">隐私与公开边界</h1>
+      <p class="privacy-dek">这是一份给访客看的匿名试运行说明：哪些信息不会出现在页面上，演示输入经过哪里，以及静态托管环境仍然有哪些客观限制。</p>
+      <p class="privacy-stamp"><span class="status-dot" aria-hidden="true"></span> 匿名试运行 · noindex · 不主动跟踪</p>
+    </div>
+  </section>
+
+  <section class="band privacy-section" aria-labelledby="summary-title">
+    <div class="wrap privacy-layout">
+      <article>
+        <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> <span lang="en">At a glance</span></p>
+        <h2 id="summary-title">先说结论</h2>
+        <p class="privacy-lead">本页和主页都以 <strong>NA</strong> 匿名身份运行。本站没有登录、评论、订阅或联系表单；演示计算只在当前浏览器内存中完成，关闭页面后不会由本站恢复。</p>
+        <ul class="privacy-checks">
+          <li><strong>不公开</strong><span>真实姓名、邮箱、单位、教育经历和个人履历目前不放在公开页面。</span></li>
+          <li><strong>不上传</strong><span>计算器答案不发送到本站后端，也不写入 cookie、localStorage 或其他浏览器存储。</span></li>
+          <li><strong>不追踪</strong><span>页面不加载分析脚本、广告、第三方字体或外部表单；链接跳转到 GitHub 后适用其自身规则。</span></li>
+        </ul>
+      </article>
+      <aside class="privacy-aside" aria-label="当前公开策略">
+        <p class="aside-kicker">Current policy</p>
+        <h3>匿名优先，证据先行。</h3>
+        <dl class="privacy-facts">
+          <div><dt>公开身份</dt><dd>NA</dd></div>
+          <div><dt>页面发现</dt><dd>noindex / nofollow</dd></div>
+          <div><dt>站点形态</dt><dd>纯静态</dd></div>
+          <div><dt>联系方式</dt><dd>暂不公开</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section class="band alt privacy-section" aria-labelledby="flow-title">
+    <div class="wrap">
+      <header class="section-h">
+        <p><span lang="en">Data flow</span></p>
+        <h2 id="flow-title">数据经过哪里</h2>
+        <p class="section-lead">下表区分“页面本身的行为”和“外部服务可能拥有的基础记录”，避免把隐私边界说得超过事实。</p>
+      </header>
+      <div class="privacy-table-wrap" tabindex="0" role="region" aria-label="数据流向表，可横向滚动">
+        <table class="privacy-table">
+          <caption>不同交互的数据流向与边界</caption>
+          <thead>
+            <tr><th scope="col">交互</th><th scope="col">本站做什么</th><th scope="col">你需要知道的限制</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">浏览主页、状态页或项目页</th>
+              <td>返回静态 HTML、CSS 和必要的本地资源，不设置账号或分析脚本。</td>
+              <td>GitHub Pages 等托管平台可能保留基础访问日志；这不由页面代码控制。</td>
+            </tr>
+            <tr>
+              <th scope="row">填写风险分层演示</th>
+              <td>答案只进入当前标签页的 JavaScript 内存，按锁定参数计算后渲染结果。</td>
+              <td>不要输入真实患者姓名、联系方式、病历号或其他可识别信息；演示不是诊断工具。</td>
+            </tr>
+            <tr>
+              <th scope="row">打开 GitHub 链接</th>
+              <td>使用 no-referrer 链接离开本站，不把本站地址作为来源传给目标站点。</td>
+              <td>离开本站后，GitHub 的账号、日志和隐私政策独立适用；公开用户名本身可能具有关联性。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="band privacy-section" aria-labelledby="boundary-title">
+    <div class="wrap privacy-layout privacy-layout-reverse">
+      <article>
+        <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> <span lang="en">Public boundary</span></p>
+        <h2 id="boundary-title">公开到这里为止</h2>
+        <p class="privacy-lead">当前版本的目标是验证域名、页面和一项可复核演示，而不是建立完整个人档案。任何身份资料、CV 或直接联系方式都要经过本人复核后才会进入正式版。</p>
+        <div class="privacy-boundary-grid">
+          <article><strong>现在公开</strong><span>研究主题、方法偏好、项目页面、演示和可核验的版本说明。</span></article>
+          <article><strong>暂不公开</strong><span>真实姓名、教育/工作经历、邮箱、电话和未复核的个人陈述。</span></article>
+          <article><strong>以后再决定</strong><span>是否开放搜索收录、是否增加英文页，以及采用哪一种可控联系方式。</span></article>
+        </div>
+      </article>
+      <aside class="privacy-aside privacy-aside-note" aria-label="核验入口">
+        <p class="aside-kicker">Verify the boundary</p>
+        <h3>想看技术证据？</h3>
+        <p>项目详情页列出模型快照、公开副本哈希和复现限制；状态页记录当前开放范围与最近更新。</p>
+        <p class="hero-actions">
+          <a class="btn btn-quiet" href="/work/myopia-risk-calculator/">查看核验记录 <span aria-hidden="true">→</span></a>
+          <a class="btn btn-quiet" href="/status.html">查看项目状态 <span aria-hidden="true">→</span></a>
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="band ink privacy-section privacy-next" aria-labelledby="next-title">
+    <div class="wrap">
+      <header class="section-h light">
+        <p><span lang="en">Next checkpoint</span></p>
+        <h2 id="next-title">内容复核后，再扩大公开范围。</h2>
+        <p class="section-lead">如果未来发布真实身份或联系方式，会先更新公开边界、重新运行发布闸门，并确认页面与仓库历史没有意外暴露不该公开的内容。</p>
+      </header>
+      <p class="hero-actions">
+        <a class="btn btn-solid" href="/">返回匿名主页</a>
+        <a class="btn btn-ghost" href="/demo/">运行交互演示 <span aria-hidden="true">↗</span></a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap bar">
+    <p><strong>NA</strong> · <span lang="en">Ophthalmic clinical research</span></p>
+    <p><a href="/status.html">项目状态</a> · <a href="/privacy.html">隐私与边界</a> · 纯静态 · 无跟踪</p>
+  </div>
+</footer>
+</body>
+</html>

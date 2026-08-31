@@ -52,6 +52,11 @@ function Write-Section {
     Write-Host ('-' * 72)
 }
 
+function Write-Info {
+    param([string] $Text)
+    Write-Host $Text -ForegroundColor DarkGray
+}
+
 function Add-Finding {
     param(
         [ValidateSet('block', 'warn')][string] $Severity,
@@ -258,6 +263,7 @@ try {
         'myopia-risk-calculator/index.html',
         'demo/index.html',
         'status.html',
+        'privacy.html',
         'assets/status.css',
         'work/myopia-risk-calculator/index.html',
         'work/myopia-risk-calculator/verification.json'

@@ -25,6 +25,7 @@ const statusPage = await readText("status.html");
 const statusCss = await readText("assets/status.css");
 const projectPage = await readText("work/myopia-risk-calculator/index.html");
 const verificationManifest = await readText("work/myopia-risk-calculator/verification.json");
+const privacyPage = await readText("privacy.html");
 const robots = await readText("robots.txt");
 let notFound = await readText("404.html");
 const calculatorRaw = await readText("third_party/myopia-risk-calculator/index.html");
@@ -139,6 +140,7 @@ const anonymousPages = [
   ["work/myopia-risk-calculator/index.html", projectPage],
   ["demo/index.html", calculator],
   ["myopia-risk-calculator/index.html", calculator],
+  ["privacy.html", privacyPage],
 ];
 for (const [name, page] of anonymousPages) {
   if (/\{\{需你填写:/u.test(page)) {
@@ -160,6 +162,9 @@ if (/mailto:/i.test(html)) {
 }
 if (!html.includes('href="/demo/"')) {
   throw new Error("Anonymous build must keep the calculator demo on this host.");
+}
+if (!html.includes('href="/privacy.html"')) {
+  throw new Error("Anonymous build must link to the privacy boundary page.");
 }
 if (!html.includes('property="og:image"')) {
   throw new Error("Anonymous build must keep the social preview image metadata.");
@@ -204,6 +209,7 @@ const statusPage = ${JSON.stringify(statusPage)};
 const statusCss = ${JSON.stringify(statusCss)};
 const projectPage = ${JSON.stringify(projectPage)};
 const verificationManifest = ${JSON.stringify(verificationManifestBody)};
+const privacyPage = ${JSON.stringify(privacyPage)};
 const robots = ${JSON.stringify(robots)};
 const calculator = ${JSON.stringify(calculator)};
 const notFound = ${JSON.stringify(notFound)};
@@ -224,6 +230,9 @@ const files = {
   "/work/myopia-risk-calculator/": { body: projectPage, type: "text/html; charset=utf-8" },
   "/work/myopia-risk-calculator/index.html": { body: projectPage, type: "text/html; charset=utf-8" },
   "/work/myopia-risk-calculator/verification.json": { body: verificationManifest, type: "application/json; charset=utf-8", cache: true },
+  "/privacy": { body: privacyPage, type: "text/html; charset=utf-8" },
+  "/privacy/": { body: privacyPage, type: "text/html; charset=utf-8" },
+  "/privacy.html": { body: privacyPage, type: "text/html; charset=utf-8" },
   "/demo": { body: calculator, type: "text/html; charset=utf-8" },
   "/demo/": { body: calculator, type: "text/html; charset=utf-8" },
   "/demo/index.html": { body: calculator, type: "text/html; charset=utf-8" },
@@ -285,6 +294,8 @@ await writeFile(new URL("./og.png", staticRoot), ogBytes);
 await writeStatic("status.html", statusPage);
 await writeStatic("work/myopia-risk-calculator/index.html", projectPage);
 await writeStatic("work/myopia-risk-calculator/verification.json", verificationManifestBody);
+await writeStatic("privacy.html", privacyPage);
+await writeStatic("privacy/index.html", privacyPage);
 await writeStatic("demo/index.html", calculator);
 await writeStatic("myopia-risk-calculator/index.html", calculator);
 

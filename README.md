@@ -12,6 +12,7 @@
 > - 托管在 GitHub Pages，不依赖 ChatGPT Sites / Codex。
 > - 计算器演示固定在 `/demo/`，避免与同名独立项目的 GitHub Pages 路径冲突；旧 `/myopia-risk-calculator/` 仅保留给本地/兼容构建，线上不要依赖。
 > - 计算器的匿名核验记录在 `/work/myopia-risk-calculator/`，维护状态在 `/status.html`。
+> - 隐私与数据流向说明在 `/privacy.html`；它解释匿名边界，也明确静态托管平台可能保留基础访问日志。
 > - 正式身份页仍可按下面「快速上手」填 `myinfo.txt`；匿名上线不要跑 `fill.ps1 -GoLive`。
 
 ---
@@ -46,6 +47,7 @@ powershell -ExecutionPolicy Bypass -File fill.ps1
 | `index.html` | 主页内容与结构 |
 | `assets/site.css` | 主页与 404 页共用的视觉样式、响应式和打印规则 |
 | `status.html` / `assets/status.css` | 匿名项目状态、更新记录与公开边界 |
+| `privacy.html` | 匿名试运行的隐私说明、数据流向与公开边界 |
 | `work/myopia-risk-calculator/index.html` | 计算器的匿名项目详情、复现路径与证据边界 |
 | `work/myopia-risk-calculator/verification.json` | 机器可读的版本、快照哈希与一致性核验清单 |
 | `demo/index.html` | 根站点可控的计算器演示入口（`/demo/`） |
@@ -184,6 +186,14 @@ git add . && git commit -m "更新" && git push
 ```
 
 推送后约一分钟自动重新发布。
+
+匿名阶段可额外运行历史身份审计：
+
+```bash
+npm run guard:history
+```
+
+它只读取 Git 提交元数据，不会改写历史；发现旧提交中的真实邮箱时会阻断并只显示掩码值。历史清理需要单独规划，不能把它当作普通页面更新一起强推。
 
 **验证时务必带上随机查询串**，例如 `https://echosine.net/?v=123`。
 GitHub Pages 走 CDN，直接访问原地址很可能拿到边缘节点的旧缓存，让你误以为没生效——

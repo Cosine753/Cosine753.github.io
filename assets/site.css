@@ -1180,6 +1180,116 @@ html.motion .reveal.in {
 .project-page .site-footer a,
 .status-page .site-footer a { color: var(--peach); text-decoration: none; }
 
+/* Privacy boundary page */
+.inline-link {
+  color: var(--coral-text);
+  text-underline-offset: 0.18em;
+}
+.contact .inline-link { color: var(--peach); }
+.privacy-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255,253,248,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,253,248,0.035) 1px, transparent 1px),
+    radial-gradient(circle at 84% 24%, rgba(244, 200, 168, 0.2), transparent 24rem),
+    var(--teal);
+  background-size: 2.4rem 2.4rem, 2.4rem 2.4rem, auto, auto;
+  color: var(--white);
+}
+.privacy-hero-inner { padding: 5.2rem 0 5rem; }
+.privacy-hero h1 {
+  max-width: 15ch;
+  margin: 0.7rem 0 0;
+  font-size: 5.1rem;
+  line-height: 1.08;
+}
+.privacy-dek {
+  max-width: 46rem;
+  margin: 1.2rem 0 0;
+  color: color-mix(in srgb, var(--white) 78%, transparent);
+  font-size: 1.08rem;
+}
+.privacy-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0 0;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--white) 28%, transparent);
+  border-radius: 999px;
+  color: var(--peach);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+}
+.privacy-section { padding-top: 4.8rem; padding-bottom: 4.8rem; }
+.privacy-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr);
+  gap: 4rem;
+  align-items: start;
+}
+.privacy-layout-reverse > article { grid-column: 2; }
+.privacy-layout-reverse > .privacy-aside { grid-column: 1; grid-row: 1; }
+.privacy-layout h2 {
+  max-width: 18ch;
+  margin: 0.45rem 0 0;
+  font-size: 3rem;
+  line-height: 1.15;
+}
+.privacy-lead { max-width: 46rem; margin: 1.1rem 0 0; color: var(--muted); font-size: 1.05rem; }
+.privacy-checks {
+  display: grid;
+  gap: 0;
+  margin: 1.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.privacy-checks li {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 1.2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.privacy-checks strong { color: var(--coral-text); font-family: Georgia, "Times New Roman", serif; font-size: 1.15rem; font-weight: 500; }
+.privacy-checks span { color: var(--muted); }
+.privacy-aside {
+  padding: 1.35rem 1.4rem 1.45rem;
+  border-top: 3px solid var(--coral);
+  background: color-mix(in srgb, var(--paper-2) 72%, transparent);
+}
+.privacy-aside h3 { margin: 0.65rem 0 0; font-size: 1.45rem; }
+.privacy-aside > p:not(.aside-kicker):not(.hero-actions) { margin: 0.7rem 0 0; color: var(--muted); }
+.privacy-facts { margin: 0.8rem 0 0; }
+.privacy-facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.privacy-facts dt { color: var(--faint); font-size: 0.82rem; }
+.privacy-facts dd { margin: 0; color: var(--ink); font-weight: 650; text-align: right; }
+.privacy-table-wrap { overflow-x: auto; margin-top: 1.8rem; border: 1px solid var(--line); border-radius: 0.5rem; }
+.privacy-table { width: 100%; min-width: 48rem; border-collapse: collapse; background: var(--white); }
+.privacy-table caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.privacy-table th,
+.privacy-table td { padding: 1rem 1.1rem; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+.privacy-table thead th { color: var(--teal-2); background: color-mix(in srgb, var(--paper-2) 72%, var(--white)); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.privacy-table tbody th { width: 22%; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 1.08rem; font-weight: 500; }
+.privacy-table td { color: var(--muted); font-size: 0.94rem; line-height: 1.65; }
+.privacy-table tr:last-child th,
+.privacy-table tr:last-child td { border-bottom: 0; }
+.privacy-boundary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1.8rem; }
+.privacy-boundary-grid article { padding: 1.2rem 1.25rem 1.3rem; border-top: 2px solid var(--coral); background: color-mix(in srgb, var(--paper-2) 62%, transparent); }
+.privacy-boundary-grid strong { display: block; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 1.16rem; font-weight: 500; }
+.privacy-boundary-grid span { display: block; margin-top: 0.45rem; color: var(--muted); font-size: 0.92rem; }
+.privacy-aside-note .hero-actions { margin-top: 1.2rem; }
+.privacy-aside-note .btn-quiet { color: var(--teal-2); }
+.privacy-next .section-lead { max-width: 48rem; }
+
 /* Status page */
 .status-hero { background: var(--paper-2); border-bottom: 1px solid var(--line); }
 .status-hero-inner { padding: 4.6rem 0 4.2rem; }
@@ -1215,22 +1325,30 @@ html.motion .reveal.in {
   .project-layout-reverse,
   .limits-layout,
   .project-links,
-  .status-layout { grid-template-columns: 1fr; gap: 2rem; }
+  .status-layout,
+  .privacy-layout { grid-template-columns: 1fr; gap: 2rem; }
   .project-layout-reverse > article,
-  .project-layout-reverse > .project-note { grid-column: auto; grid-row: auto; }
-  .limits-grid, .next-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .project-hero h1, .status-hero h1 { font-size: 3.8rem; }
-  .project-layout h2, .project-links h2, .status-layout h2 { font-size: 2.35rem; }
+  .project-layout-reverse > .project-note,
+  .privacy-layout-reverse > article,
+  .privacy-layout-reverse > .privacy-aside { grid-column: auto; grid-row: auto; }
+  .limits-grid, .next-list, .privacy-boundary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-hero h1, .status-hero h1, .privacy-hero h1 { font-size: 3.8rem; }
+  .project-layout h2, .project-links h2, .status-layout h2, .privacy-layout h2 { font-size: 2.35rem; }
 }
 @media (max-width: 640px) {
   .project-hero-inner, .status-hero-inner { padding: 3.4rem 0 3.2rem; }
+  .privacy-hero-inner { padding: 3.4rem 0 3.2rem; }
   .project-section { padding-top: 3.2rem; padding-bottom: 3.2rem; }
-  .project-hero h1, .status-hero h1 { font-size: 2.75rem; }
-  .project-layout h2, .project-links h2, .status-layout h2 { font-size: 2rem; }
+  .privacy-section { padding-top: 3.2rem; padding-bottom: 3.2rem; }
+  .project-hero h1, .status-hero h1, .privacy-hero h1 { font-size: 2.75rem; }
+  .project-layout h2, .project-links h2, .status-layout h2, .privacy-layout h2 { font-size: 2rem; }
   .project-dek { font-size: 1rem; }
   .limits-grid, .next-list, .status-grid { grid-template-columns: 1fr; }
+  .privacy-boundary-grid { grid-template-columns: 1fr; }
   .update-list li { grid-template-columns: 1fr; gap: 0.25rem; }
   .project-facts > div { align-items: baseline; }
+  .privacy-checks li { grid-template-columns: 1fr; gap: 0.25rem; }
+  .privacy-facts > div { align-items: baseline; }
 }
 
 @media print {
@@ -1264,4 +1382,33 @@ html.motion .reveal.in {
   .project-page .hero-actions,
   .project-page .site-footer { display: none !important; }
   .project-page a { text-decoration: underline; }
+}
+
+@media print {
+  .privacy-page .site-header,
+  .privacy-page .site-footer { display: none !important; }
+  .privacy-page .privacy-hero,
+  .privacy-page .privacy-section,
+  .privacy-page .privacy-next {
+    padding: 1.2rem 0;
+    color: #111 !important;
+    background: #fff !important;
+  }
+  .privacy-page .privacy-hero h1,
+  .privacy-page .privacy-layout h2,
+  .privacy-page .privacy-aside h3,
+  .privacy-page .privacy-boundary-grid strong { color: #111 !important; }
+  .privacy-page .privacy-dek,
+  .privacy-page .privacy-lead,
+  .privacy-page .privacy-checks span,
+  .privacy-page .privacy-aside > p:not(.aside-kicker):not(.hero-actions),
+  .privacy-page .privacy-table td,
+  .privacy-page .privacy-boundary-grid span,
+  .privacy-page .privacy-next .section-lead { color: #333 !important; }
+  .privacy-page .privacy-stamp { color: #333 !important; border-color: #aaa; }
+  .privacy-page .privacy-aside,
+  .privacy-page .privacy-boundary-grid article,
+  .privacy-page .privacy-table-wrap { border: 1px solid #aaa; background: #fff; box-shadow: none; break-inside: avoid; }
+  .privacy-page .hero-actions { display: none !important; }
+  .privacy-page a { text-decoration: underline; }
 }

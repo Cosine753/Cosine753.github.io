@@ -32,7 +32,7 @@ for (const section of ["about", "work", "research", "agenda", "methods", "backgr
   assert.match(html, new RegExp(`href="#${section}"`), section);
   assert.match(html, new RegExp(`id="${section}"`), section);
 }
-assert.match(html, /href="\/assets\/site\.css\?v=7"/);
+assert.match(html, /href="\/assets\/site\.css\?v=8"/);
 assert.match(html, /src="\/assets\/motion\.js\?v=5"/);
 assert.match(html, /kicker-rule/);
 assert.doesNotMatch(html, /https:\/\/echosine\.net\/myopia-risk-calculator\//);
@@ -43,6 +43,7 @@ assert.doesNotMatch(html, /application\/ld\+json/i);
 assert.equal((html.match(/GitHub 联系/g) ?? []).length, 0);
 assert.match(html, /href="\/work\/myopia-risk-calculator\/"/);
 assert.match(html, /href="\/status\.html"/);
+assert.match(html, /href="\/privacy\.html"/);
 
 const css = await fetchPath("/assets/site.css");
 assert.equal(css.status, 200);
@@ -123,6 +124,24 @@ assert.equal(manifestBody.evidence_status.expected_outputs_published, false);
 assert.equal(manifestBody.privacy.published_identity, "anonymous (NA)");
 assert.doesNotMatch(JSON.stringify(manifestBody), /mailto:/i);
 assert.doesNotMatch(JSON.stringify(manifestBody), /cosine753\.github\.io/i);
+
+const privacySource = await readFile(new URL("./privacy.html", import.meta.url), "utf8");
+assert.match(privacySource, /<title>隐私与公开边界 · echosine\.net<\/title>/);
+assert.match(privacySource, /不上传/);
+assert.match(privacySource, /基础访问日志/);
+assert.match(privacySource, /href="\/privacy\.html"/);
+assert.doesNotMatch(privacySource, /mailto:/i);
+assert.doesNotMatch(privacySource, /\{\{需你填写:/);
+
+for (const path of ["/privacy", "/privacy/", "/privacy.html"]) {
+  const page = await fetchPath(path);
+  assert.equal(page.status, 200, path);
+  assert.equal(page.headers.get("x-robots-tag"), "noindex, nofollow", path);
+  assert.equal(page.headers.get("referrer-policy"), "no-referrer", path);
+  assert.equal(page.headers.get("x-frame-options"), "DENY", path);
+  assert.match(page.headers.get("content-security-policy") ?? "", /script-src 'self'/, path);
+  assert.equal(normalizeHtml(await page.text()), normalizeHtml(privacySource), path);
+}
 
 const robots = await fetchPath("/robots.txt");
 assert.equal(robots.status, 200);
