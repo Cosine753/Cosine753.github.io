@@ -10,7 +10,7 @@
 > **当前状态**
 > - 公开站是匿名版：姓名显示为 NA，保留 `noindex, nofollow`。
 > - 托管在 GitHub Pages，不依赖 ChatGPT Sites / Codex。
-> - 计算器在 `/myopia-risk-calculator/`。
+> - 计算器演示固定在 `/demo/`，避免与同名独立项目的 GitHub Pages 路径冲突；旧 `/myopia-risk-calculator/` 仅保留给本地/兼容构建，线上不要依赖。
 > - 计算器的匿名核验记录在 `/work/myopia-risk-calculator/`，维护状态在 `/status.html`。
 > - 正式身份页仍可按下面「快速上手」填 `myinfo.txt`；匿名上线不要跑 `fill.ps1 -GoLive`。
 
@@ -47,6 +47,8 @@ powershell -ExecutionPolicy Bypass -File fill.ps1
 | `assets/site.css` | 主页与 404 页共用的视觉样式、响应式和打印规则 |
 | `status.html` / `assets/status.css` | 匿名项目状态、更新记录与公开边界 |
 | `work/myopia-risk-calculator/index.html` | 计算器的匿名项目详情、复现路径与证据边界 |
+| `work/myopia-risk-calculator/verification.json` | 机器可读的版本、快照哈希与一致性核验清单 |
+| `demo/index.html` | 根站点可控的计算器演示入口（`/demo/`） |
 | `cv.html` | **CV 的排版源文件**，A4 打印版式。用来导出 `cv.pdf`，见下文 |
 | `404.html` | 404 页面，GitHub Pages 自动使用 |
 | `myinfo.txt` | **你要填的就是这个文件**。已加入 `.gitignore`，不会被提交 |

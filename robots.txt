@@ -1,9 +1,11 @@
 # https://echosine.net/
 #
-# 匿名试运行：发现仍由页面里的 noindex 关闭。
-# 故意不写 Disallow，让爬虫能读到 noindex。
+# 匿名试运行：HTML 页面用 noindex 关闭发现；机器可读核验清单没有 HTML
+# noindex 能力，因此单独禁止抓取。
 
 User-agent: *
 Allow: /
+Disallow: /myopia-risk-calculator
+Disallow: /work/myopia-risk-calculator/verification.json
 
 Sitemap: https://echosine.net/sitemap.xml

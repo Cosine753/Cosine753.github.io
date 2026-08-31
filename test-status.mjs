@@ -20,7 +20,7 @@ for (const path of ["/status", "/status/", "/status.html"]) {
   assert.match(body, /匿名试运行/, path);
   assert.match(body, /最近更新/, path);
   assert.match(body, /href="\/assets\/status\.css\?v=2"/, path);
-  assert.match(body, /href="\/myopia-risk-calculator\/"/, path);
+  assert.match(body, /href="\/demo\/"/, path);
   assert.doesNotMatch(body, /\{\{需你填写:/, path);
   assert.doesNotMatch(body, /mailto:/i, path);
 }

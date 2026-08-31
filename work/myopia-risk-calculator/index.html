@@ -56,7 +56,7 @@
       <h1>儿童近视与干眼共病<br>问卷风险分层计算器</h1>
       <p class="project-dek">一个把锁定的两阶段 Logistic 路径转成浏览器交互的研究演示。这里记录它如何被实现、怎样被复核，以及目前还不能支持什么。</p>
       <p class="hero-actions">
-        <a class="btn btn-solid" href="/myopia-risk-calculator/">运行交互演示 <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-solid" href="/demo/">运行交互演示 <span aria-hidden="true">↗</span></a>
         <a class="btn btn-ghost" href="https://github.com/Cosine753/myopia-risk-calculator" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">查看源码 <span class="external-mark" aria-hidden="true">↗</span></a>
       </p>
     </div>
@@ -79,7 +79,7 @@
         <dl class="project-facts">
           <div><dt>版本</dt><dd>v1.0.0</dd></div>
           <div><dt>输入</dt><dd>15 项问卷</dd></div>
-          <div><dt>验证记录</dt><dd>201 例机构留出</dd></div>
+          <div><dt>维护者核验</dt><dd>201 例机构留出</dd></div>
           <div><dt>分层不一致</dt><dd class="emphasis">0 例</dd></div>
           <div><dt>运行位置</dt><dd>浏览器本地</dd></div>
           <div><dt>许可</dt><dd>MIT</dd></div>
@@ -97,13 +97,14 @@
           <li><span>1</span><div><h3>打开演示</h3><p>进入同一域名下的交互页面，确认页面显示版本号。</p></div></li>
           <li><span>2</span><div><h3>输入一组回答</h3><p>按题目逐项选择；输入只用于当前计算，不写入后端或浏览器存储。</p></div></li>
           <li><span>3</span><div><h3>观察两阶段输出</h3><p>记录每一阶段的路径与最终分层，不把输出解释成个体诊断。</p></div></li>
-          <li><span>4</span><div><h3>对照源码与快照</h3><p>从源码检查参数、阈值和执行顺序；匿名发布快照 SHA-256 为 <code>cac745fccb61882c5ffce8d29cd343949a3981b6d63d5ae6e51426dbc949115a</code>。</p></div></li>
+          <li><span>4</span><div><h3>对照源码与快照</h3><p>从源码检查参数、阈值和执行顺序；模型源快照（<code>third_party</code>，未注入页面安全元标签）的 SHA-256 为 <code>cac745fccb61882c5ffce8d29cd343949a3981b6d63d5ae6e51426dbc949115a</code>，公开演示副本的哈希记录在下方核验清单中。</p></div></li>
         </ol>
       </article>
       <aside class="project-note">
         <p class="aside-kicker">Local by design</p>
         <h3>输入不离开浏览器</h3>
         <p>本站没有这个演示所需的后端接口、分析脚本或第三方资源。关闭页面后，当前输入不会被本站恢复。</p>
+        <p class="note-rule">透明度说明：201 例数字是维护者对机构留出记录的重算声明；原始机构记录与期望输出未随仓库公开，因此外部读者不能独立重跑这项检查。</p>
         <p class="note-rule">这是一项隐私边界声明，不是对医疗数据安全的替代保证。请勿输入可识别的真实患者信息。</p>
       </aside>
     </div>
@@ -145,8 +146,9 @@
         <h2 id="links-title">把页面、源码和版本放在同一条链上。</h2>
       </div>
       <nav class="link-list" aria-label="项目链接">
-        <a href="/myopia-risk-calculator/">交互演示 <span aria-hidden="true">↗</span></a>
+        <a href="/demo/">交互演示 <span aria-hidden="true">↗</span></a>
         <a href="https://github.com/Cosine753/myopia-risk-calculator" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">源码仓库 <span aria-hidden="true">↗</span></a>
+        <a href="/work/myopia-risk-calculator/verification.json" download="vision-triage-verification.json">下载核验清单 <span aria-hidden="true">↓</span></a>
         <a href="/status.html">查看项目状态 <span aria-hidden="true">→</span></a>
         <a href="/">返回匿名主页 <span aria-hidden="true">→</span></a>
       </nav>

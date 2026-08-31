@@ -256,9 +256,11 @@ try {
         'sitemap.xml',
         'CNAME',
         'myopia-risk-calculator/index.html',
+        'demo/index.html',
         'status.html',
         'assets/status.css',
-        'work/myopia-risk-calculator/index.html'
+        'work/myopia-risk-calculator/index.html',
+        'work/myopia-risk-calculator/verification.json'
     ) + @($AllowPath)
 
     $sensitivePathRules = @(
@@ -329,6 +331,7 @@ try {
             $path -eq '404.html' -or
             $path -eq 'status.html' -or
             $path -eq 'myopia-risk-calculator/index.html' -or
+            $path -eq 'demo/index.html' -or
             $path -eq 'work/myopia-risk-calculator/index.html' -or
             $path -match '(?i)(^|/)(?:detail|details|status)(?:/|\.html$)' -or
             $path -match '(?i)^work/(?:.+/)?(?:detail|details|status)(?:/|\.html$)'

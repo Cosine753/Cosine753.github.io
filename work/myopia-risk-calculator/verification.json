@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "project": {
+    "id": "vision-triage",
+    "title": "儿童近视与干眼共病问卷风险分层计算器",
+    "version": "1.0.0",
+    "status": "completed-live"
+  },
+  "snapshot": {
+    "artifact": "third_party/myopia-risk-calculator/index.html",
+    "sha256": "cac745fccb61882c5ffce8d29cd343949a3981b6d63d5ae6e51426dbc949115a",
+    "normalization": "UTF-8 bytes with LF line endings"
+  },
+  "published_demo": {
+    "artifact": "demo/index.html",
+    "sha256": "27bdd0b447f229497e4014adb4db118d81c2c9a7ca118ed5bb7c806a1d295454",
+    "normalization": "UTF-8 bytes with LF line endings; includes the anonymous referrer and CSP meta tags"
+  },
+  "validation": {
+    "dataset": "institutional hold-out records",
+    "sample_count": 201,
+    "stratification_mismatches": 0,
+    "method": "Recompute locked outputs and compare final risk strata"
+  },
+  "evidence_status": {
+    "classification": "maintainer-reported",
+    "raw_records_published": false,
+    "expected_outputs_published": false,
+    "note": "The underlying institutional records and expected-output file are not published in this repository; external readers cannot independently rerun the 201-case check."
+  },
+  "runtime": {
+    "mode": "browser-local",
+    "backend": false,
+    "browser_storage": false,
+    "external_dependencies": false
+  },
+  "privacy": {
+    "published_identity": "anonymous (NA)",
+    "patient_data": "Do not enter identifiable information",
+    "discovery": "noindex, nofollow"
+  },
+  "evidence_boundary": [
+    "This verifies faithful execution of the locked model in the public demo.",
+    "It does not establish external or prospective validation.",
+    "It is not a diagnostic or treatment tool."
+  ],
+  "links": {
+    "project_page": "/work/myopia-risk-calculator/",
+    "demo": "/demo/",
+    "source": "https://github.com/Cosine753/myopia-risk-calculator"
+  }
+}
