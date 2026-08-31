@@ -15,3 +15,8 @@ cv-full.pdf
 # Sites 匿名试运行版的本地构建产物
 dist/
 *.tgz
+
+# Local browser/hosting diagnostics can contain account data, tokens, or screenshots.
+# Keep the tracked image generator; add any other tool deliberately with -f.
+tools/*
+!tools/make-og.ps1
