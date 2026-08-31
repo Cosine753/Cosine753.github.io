@@ -6,7 +6,7 @@ const dist = new URL("./dist/", root);
 const staticRoot = new URL("./dist/static/", root);
 
 const LOCKED_CALCULATOR_SHA256 =
-  "dff5204b9b9483880b2170b4ca1aa0015bc0cdf1cfddf572ffd8089225c1a70c";
+  "cac745fccb61882c5ffce8d29cd343949a3981b6d63d5ae6e51426dbc949115a";
 
 const readText = async (path) => readFile(new URL(path, root), "utf8");
 
@@ -19,6 +19,9 @@ const writeStatic = async (relativePath, body) => {
 let html = await readText("index.html");
 const css = await readText("assets/site.css");
 const motion = await readText("assets/motion.js");
+const statusPage = await readText("status.html");
+const statusCss = await readText("assets/status.css");
+const projectPage = await readText("work/myopia-risk-calculator/index.html");
 let notFound = await readText("404.html");
 const calculatorRaw = await readText("third_party/myopia-risk-calculator/index.html");
 const ogBytes = await readFile(new URL("og.png", root));
@@ -83,6 +86,23 @@ let calculator = calculatorRaw.replace(
   '<meta name="robots" content="noindex, nofollow">',
 );
 
+const anonymousPages = [
+  ["index.html", html],
+  ["status.html", statusPage],
+  ["work/myopia-risk-calculator/index.html", projectPage],
+];
+for (const [name, page] of anonymousPages) {
+  if (/\{\{需你填写:/u.test(page)) {
+    throw new Error(`${name} still contains an unresolved visible placeholder.`);
+  }
+  if (/mailto:/iu.test(page)) {
+    throw new Error(`${name} must not publish an email address.`);
+  }
+  if (/https:\/\/cosine753\.github\.io/iu.test(page)) {
+    throw new Error(`${name} still points at the old github.io domain.`);
+  }
+}
+
 if (html.includes("{{需你填写:")) {
   throw new Error("Anonymous build still contains an unresolved visible placeholder.");
 }
@@ -107,6 +127,9 @@ const robots = `User-agent: *\nAllow: /\n\n# Anonymous trial: discovery remains 
 const worker = `const home = ${JSON.stringify(html)};
 const css = ${JSON.stringify(css)};
 const motion = ${JSON.stringify(motion)};
+const statusPage = ${JSON.stringify(statusPage)};
+const statusCss = ${JSON.stringify(statusCss)};
+const projectPage = ${JSON.stringify(projectPage)};
 const robots = ${JSON.stringify(robots)};
 const calculator = ${JSON.stringify(calculator)};
 const notFound = ${JSON.stringify(notFound)};
@@ -117,8 +140,15 @@ const files = {
   "/index.html": { body: home, type: "text/html; charset=utf-8" },
   "/assets/site.css": { body: css, type: "text/css; charset=utf-8", cache: true },
   "/assets/motion.js": { body: motion, type: "application/javascript; charset=utf-8", cache: true },
+  "/assets/status.css": { body: statusCss, type: "text/css; charset=utf-8", cache: true },
   "/og.png": { body: og, type: "image/png", cache: true },
   "/robots.txt": { body: robots, type: "text/plain; charset=utf-8" },
+  "/status": { body: statusPage, type: "text/html; charset=utf-8" },
+  "/status/": { body: statusPage, type: "text/html; charset=utf-8" },
+  "/status.html": { body: statusPage, type: "text/html; charset=utf-8" },
+  "/work/myopia-risk-calculator": { body: projectPage, type: "text/html; charset=utf-8" },
+  "/work/myopia-risk-calculator/": { body: projectPage, type: "text/html; charset=utf-8" },
+  "/work/myopia-risk-calculator/index.html": { body: projectPage, type: "text/html; charset=utf-8" },
   "/myopia-risk-calculator": { body: calculator, type: "text/html; charset=utf-8" },
   "/myopia-risk-calculator/": { body: calculator, type: "text/html; charset=utf-8" },
   "/myopia-risk-calculator/index.html": { body: calculator, type: "text/html; charset=utf-8" },
@@ -165,7 +195,10 @@ await writeStatic("404.html", notFound);
 await writeStatic("robots.txt", robots);
 await writeStatic("assets/site.css", css);
 await writeStatic("assets/motion.js", motion);
+await writeStatic("assets/status.css", statusCss);
 await writeFile(new URL("./og.png", staticRoot), ogBytes);
+await writeStatic("status.html", statusPage);
+await writeStatic("work/myopia-risk-calculator/index.html", projectPage);
 await writeStatic("myopia-risk-calculator/index.html", calculator);
 
 console.log("Built anonymous echosine.net trial site.");

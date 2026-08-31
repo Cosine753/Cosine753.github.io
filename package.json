@@ -4,7 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node build.mjs && node test-site.mjs",
-    "preview": "node serve.mjs"
+    "test": "node build.mjs && node test-site.mjs && node test-status.mjs",
+    "preview": "node serve.mjs",
+    "guard": "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File ./publish-guard.ps1 -IncludeUntracked",
+    "guard:staged": "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File ./publish-guard.ps1 -StagedOnly",
+    "guard:history": "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File ./publish-guard.ps1 -CheckHistory"
   }
 }

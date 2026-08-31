@@ -31,7 +31,7 @@ for (const section of ["about", "work", "research", "agenda", "methods", "backgr
   assert.match(html, new RegExp(`href="#${section}"`), section);
   assert.match(html, new RegExp(`id="${section}"`), section);
 }
-assert.match(html, /href="\/assets\/site\.css\?v=6"/);
+assert.match(html, /href="\/assets\/site\.css\?v=7"/);
 assert.match(html, /src="\/assets\/motion\.js\?v=5"/);
 assert.match(html, /kicker-rule/);
 assert.doesNotMatch(html, /https:\/\/echosine\.net\/myopia-risk-calculator\//);
@@ -40,6 +40,8 @@ assert.doesNotMatch(html, /mailto:/i);
 assert.doesNotMatch(html, /rel="me"/i);
 assert.doesNotMatch(html, /application\/ld\+json/i);
 assert.equal((html.match(/GitHub 联系/g) ?? []).length, 0);
+assert.match(html, /href="\/work\/myopia-risk-calculator\/"/);
+assert.match(html, /href="\/status\.html"/);
 
 const css = await fetchPath("/assets/site.css");
 assert.equal(css.status, 200);
@@ -67,6 +69,13 @@ const deployedCalculator = await readFile(
 assert.match(deployedCalculator, /<meta name="robots" content="noindex, nofollow" \/>/);
 assert.doesNotMatch(deployedCalculator, /content="index,\s*follow"/i);
 
+const calculatorSource = await readFile(
+  new URL("./third_party/myopia-risk-calculator/index.html", import.meta.url),
+  "utf8",
+);
+assert.match(calculatorSource, /<meta name="robots" content="noindex, nofollow" \/>/);
+assert.doesNotMatch(calculatorSource, /content="index,\s*follow"/i);
+
 const robots = await fetchPath("/robots.txt");
 assert.equal(robots.status, 200);
 assert.match(await robots.text(), /User-agent: \*/);
@@ -86,6 +95,28 @@ for (const path of [
   assert.doesNotMatch(body, /content="index,\s*follow"/i, path);
 }
 
+for (const path of [
+  "/work/myopia-risk-calculator",
+  "/work/myopia-risk-calculator/",
+  "/work/myopia-risk-calculator/index.html",
+]) {
+  const page = await fetchPath(path);
+  assert.equal(page.status, 200, path);
+  assert.equal(page.headers.get("x-robots-tag"), "noindex, nofollow", path);
+  assert.equal(page.headers.get("referrer-policy"), "no-referrer", path);
+  assert.equal(page.headers.get("x-frame-options"), "DENY", path);
+  assert.match(page.headers.get("content-security-policy") ?? "", /style-src 'self'/, path);
+  const body = await page.text();
+  assert.match(body, /Vision Triage|风险分层/, path);
+  assert.match(body, /v1\.0\.0/, path);
+  assert.match(body, /201 例机构留出/, path);
+  assert.match(body, /cac745fccb61882c5ffce8d29cd343949a3981b6d63d5ae6e51426dbc949115a/, path);
+  assert.match(body, /证据边界/, path);
+  assert.doesNotMatch(body, /\{\{需你填写:/, path);
+  assert.doesNotMatch(body, /mailto:/i, path);
+  assert.doesNotMatch(body, /cosine753\.github\.io/i, path);
+}
+
 const missing = await fetchPath("/not-found");
 assert.equal(missing.status, 404);
 assert.equal(missing.headers.get("x-robots-tag"), "noindex, nofollow");
@@ -93,5 +124,9 @@ assert.equal(missing.headers.get("x-robots-tag"), "noindex, nofollow");
 const head = await fetchPath("/", "HEAD");
 assert.equal(head.status, 200);
 assert.equal(await head.text(), "");
+
+const post = await fetchPath("/work/myopia-risk-calculator/", "POST");
+assert.equal(post.status, 405);
+assert.equal(post.headers.get("allow"), "GET, HEAD");
 
 console.log("Anonymous site smoke checks passed.");

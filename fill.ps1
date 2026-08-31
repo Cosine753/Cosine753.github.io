@@ -442,7 +442,7 @@ if (-not $GoLive) {
     Say "  5. git add . ; git commit -m `"填写个人信息`" ; git push"
 }
 Say ""
-Say "  验证线上效果时记得带随机查询串，例如 https://cosine753.github.io/?v=123"
+Say "  验证线上效果时记得带随机查询串，例如 https://echosine.net/?v=123"
 Say "  —— GitHub Pages 走 CDN，直接访问原地址很可能拿到旧缓存。"
 Write-Host ""
 exit 0

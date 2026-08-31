@@ -11,6 +11,7 @@
 > - 公开站是匿名版：姓名显示为 NA，保留 `noindex, nofollow`。
 > - 托管在 GitHub Pages，不依赖 ChatGPT Sites / Codex。
 > - 计算器在 `/myopia-risk-calculator/`。
+> - 计算器的匿名核验记录在 `/work/myopia-risk-calculator/`，维护状态在 `/status.html`。
 > - 正式身份页仍可按下面「快速上手」填 `myinfo.txt`；匿名上线不要跑 `fill.ps1 -GoLive`。
 
 ---
@@ -44,11 +45,15 @@ powershell -ExecutionPolicy Bypass -File fill.ps1
 |---|---|
 | `index.html` | 主页内容与结构 |
 | `assets/site.css` | 主页与 404 页共用的视觉样式、响应式和打印规则 |
+| `status.html` / `assets/status.css` | 匿名项目状态、更新记录与公开边界 |
+| `work/myopia-risk-calculator/index.html` | 计算器的匿名项目详情、复现路径与证据边界 |
 | `cv.html` | **CV 的排版源文件**，A4 打印版式。用来导出 `cv.pdf`，见下文 |
 | `404.html` | 404 页面，GitHub Pages 自动使用 |
 | `myinfo.txt` | **你要填的就是这个文件**。已加入 `.gitignore`，不会被提交 |
 | `fill.ps1` | 一键填充脚本 |
 | `check.ps1` | **发布前自检脚本**，见下文 |
+| `publish-guard.ps1` | **匿名发布闸门**：扫描 Git 发布面上的 PII、令牌、占位符和路径风险 |
+| `.github/workflows/quality.yml` | 推送 / PR 时自动运行构建、烟测和发布闸门 |
 | `tools/make-og.ps1` | 生成社交卡片图 `og.png` |
 | `og.png` | 社交卡片图。链接被贴进邮件或微信时显示的就是它 |
 | `robots.txt` / `sitemap.xml` | 给 Google Search Console / Bing 站长平台用 |
@@ -96,6 +101,21 @@ powershell -ExecutionPolicy Bypass -File fill.ps1 -GoLive
 ```bash
 powershell -ExecutionPolicy Bypass -File check.ps1
 ```
+
+匿名试运行再加一道跨文件发布闸门：
+
+```bash
+npm run guard
+```
+
+它默认扫描 Git 已跟踪文件和普通未跟踪文件（忽略 `.gitignore` 中的本地构建产物），
+检查匿名页面的 `noindex`、未解析占位符、邮箱 / 手机号 / 身份证号 / ORCID、常见访问令牌、
+私钥、本机路径和明显的诊断归档。命令返回 `0` 才表示没有阻断项；`[WARN]` 仍需人工看一眼，
+因为 GitHub Pages 的根目录会直出所有已提交文件。需要只审查暂存快照时运行
+`npm run guard:staged`；需要查看历史作者邮箱时运行 `npm run guard:history`，它不会改写历史。
+
+`noindex` 只是不让搜索引擎收录，不是访问控制。当前仓库仍是 Pages 根目录发布，
+`cv.html`、脚本和 README 可能被知道地址的人直接打开；不要把密码、患者资料或未准备公开的 CV 放进仓库。
 
 任何**阻断项**不过就返回非零退出码，提醒你先别推。七项检查：
 
@@ -163,7 +183,7 @@ git add . && git commit -m "更新" && git push
 
 推送后约一分钟自动重新发布。
 
-**验证时务必带上随机查询串**，例如 `https://cosine753.github.io/?v=123`。
+**验证时务必带上随机查询串**，例如 `https://echosine.net/?v=123`。
 GitHub Pages 走 CDN，直接访问原地址很可能拿到边缘节点的旧缓存，让你误以为没生效——
 本项目就踩过这个坑。
 
@@ -225,6 +245,8 @@ GitHub Pages 走 CDN，直接访问原地址很可能拿到边缘节点的旧缓
 | 6 | **Google Search Console / Bing 站长平台** | ⬜ 待注册。平时用不上，但万一出现需要紧急撤下的内容，你能在几小时内提交移除请求，而不是在申请季才发现 |
 | 7 | **论文 / 科研项目** | ⬜ 版块和模板已就绪（注释状态），等你有内容时启用并手工填写，见第六节 |
 | 8 | 英文版 `en/index.html` | ⏸ 暂缓。目标是大陆申请-考核制，中文为主是对的；之后要投海外项目再加，并用 `<link rel="alternate" hreflang>` 双向互链 |
+| 9 | **项目详情 / 状态页** | ✅ 已上线，仍保持 `noindex`，内容复核后再决定是否开放收录 |
+| 10 | **发布闸门与 CI** | ✅ `npm run guard` 本地可跑，GitHub Actions 会在推送 / PR 时复核 |
 
 第 6 项要等 `noindex` 删掉之后再提交 sitemap，否则站长平台只会报告
 「已被 noindex 排除」，看着像出了问题。

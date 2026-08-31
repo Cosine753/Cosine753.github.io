@@ -20,7 +20,7 @@
 
 $ErrorActionPreference = 'Stop'
 $root = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
-$SITE = 'https://cosine753.github.io/'
+$SITE = 'https://echosine.net/'
 $blocking = 0
 $warning  = 0
 
