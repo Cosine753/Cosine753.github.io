@@ -60,6 +60,10 @@ a:focus-visible, .skip:focus {
   outline: 2px solid var(--coral);
   outline-offset: 3px;
 }
+.privacy-table-wrap:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 3px;
+}
 ::selection { color: var(--white); background: var(--coral); }
 
 .wrap {

@@ -13,7 +13,7 @@
   },
   "published_demo": {
     "artifact": "demo/index.html",
-    "sha256": "27bdd0b447f229497e4014adb4db118d81c2c9a7ca118ed5bb7c806a1d295454",
+    "sha256": "85eb31462ae76933387f11abdd4fbd09ba097fca90846c4e69569eb43228a31c",
     "normalization": "UTF-8 bytes with LF line endings; includes the anonymous referrer and CSP meta tags"
   },
   "validation": {

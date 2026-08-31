@@ -24,7 +24,11 @@ if (process.platform !== "win32") {
     const safeEmail = ["fixture", "@users.noreply.github.com"].join("");
     const privateEmail = ["private", "@example.test"].join("");
     await git(["config", "user.email", safeEmail]);
-    await writeFile(join(fixture, "index.html"), "<!doctype html><title>fixture</title>\n", "utf8");
+    await writeFile(
+      join(fixture, "index.html"),
+      '<!doctype html><meta name="robots" content="noindex, nofollow"><title>fixture</title>\n',
+      "utf8",
+    );
     await git(["add", "index.html"]);
     await git(["commit", "-q", "-m", "fixture"], {
       GIT_AUTHOR_NAME: "Fixture",
@@ -34,23 +38,38 @@ if (process.platform !== "win32") {
     });
 
     const guardPath = fileURLToPath(new URL("./publish-guard.ps1", root));
-    let result;
-    try {
-      result = await run("powershell", [
-        "-NoProfile",
-        "-NonInteractive",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        guardPath,
-        "-Root",
-        fixture,
-        "-CheckHistory",
-      ], { windowsHide: true, maxBuffer: 1024 * 1024 });
-    } catch (error) {
-      result = error;
-    }
-    const output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+    const callGuard = async (...args) => {
+      try {
+        return await run("powershell", [
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          guardPath,
+          "-Root",
+          fixture,
+          ...args,
+        ], { windowsHide: true, maxBuffer: 1024 * 1024 });
+      } catch (error) {
+        return error;
+      }
+    };
+
+    await writeFile(join(fixture, "privacy.html"), "<!doctype html><title>privacy</title>\n", "utf8");
+    let result = await callGuard("-IncludeUntracked");
+    let output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+    assert.equal(result.code, 1, output);
+    assert.match(output, /ROBOTS_NOINDEX_MISSING\s+privacy\.html/);
+    await writeFile(
+      join(fixture, "privacy.html"),
+      '<!doctype html><meta name="robots" content="noindex, nofollow"><title>privacy</title>\n',
+      "utf8",
+    );
+    console.log("Guard privacy regression check passed.");
+
+    result = await callGuard("-CheckHistory");
+    output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
     assert.equal(result.code, 1, output);
     assert.match(output, /HISTORY_EMAIL/);
     assert.doesNotMatch(output, /private@example\.test/);

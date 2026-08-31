@@ -259,11 +259,13 @@ try {
         'og.png',
         'robots.txt',
         'sitemap.xml',
+        '.nojekyll',
         'CNAME',
         'myopia-risk-calculator/index.html',
         'demo/index.html',
         'status.html',
         'privacy.html',
+        'privacy/index.html',
         'assets/status.css',
         'work/myopia-risk-calculator/index.html',
         'work/myopia-risk-calculator/verification.json'
@@ -336,6 +338,8 @@ try {
             $path -eq 'index.html' -or
             $path -eq '404.html' -or
             $path -eq 'status.html' -or
+            $path -eq 'privacy.html' -or
+            $path -eq 'privacy/index.html' -or
             $path -eq 'myopia-risk-calculator/index.html' -or
             $path -eq 'demo/index.html' -or
             $path -eq 'work/myopia-risk-calculator/index.html' -or

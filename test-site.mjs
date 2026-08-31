@@ -32,7 +32,7 @@ for (const section of ["about", "work", "research", "agenda", "methods", "backgr
   assert.match(html, new RegExp(`href="#${section}"`), section);
   assert.match(html, new RegExp(`id="${section}"`), section);
 }
-assert.match(html, /href="\/assets\/site\.css\?v=8"/);
+assert.match(html, /href="\/assets\/site\.css\?v=9"/);
 assert.match(html, /src="\/assets\/motion\.js\?v=5"/);
 assert.match(html, /kicker-rule/);
 assert.doesNotMatch(html, /https:\/\/echosine\.net\/myopia-risk-calculator\//);
@@ -70,18 +70,59 @@ const deployedCalculator = await readFile(
 );
 assert.match(deployedCalculator, /<meta name="robots" content="noindex, nofollow" \/>/);
 assert.match(deployedCalculator, /<meta name="referrer" content="no-referrer" \/>/);
+assert.match(deployedCalculator, /<link rel="canonical" href="https:\/\/echosine\.net\/demo\/" \/>/);
+assert.match(deployedCalculator, /property="og:image"/);
 assert.match(deployedCalculator, /<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline';/);
-assert.match(deployedCalculator, /<form id="questionnaire" novalidate autocomplete="off">/);
+assert.match(deployedCalculator, /<form id="questionnaire" novalidate autocomplete="off" aria-describedby="privacy-note">/);
+assert.match(deployedCalculator, /id="privacy-note"/);
+assert.match(deployedCalculator, /id="resultAnnouncement"/);
+assert.match(deployedCalculator, /role="progressbar"/);
 assert.doesNotMatch(deployedCalculator, /content="index,\s*follow"/i);
 
 const deployedDemo = await readFile(new URL("./demo/index.html", import.meta.url), "utf8");
 assert.match(deployedDemo, /<meta name="robots" content="noindex, nofollow" \/>/);
 assert.match(deployedDemo, /<meta name="referrer" content="no-referrer" \/>/);
+assert.match(deployedDemo, /<link rel="canonical" href="https:\/\/echosine\.net\/demo\/" \/>/);
 assert.match(deployedDemo, /<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline';/);
-assert.match(deployedDemo, /<form id="questionnaire" novalidate autocomplete="off">/);
+assert.match(deployedDemo, /<form id="questionnaire" novalidate autocomplete="off" aria-describedby="privacy-note">/);
+assert.match(deployedDemo, /class="calculator-nav"/);
+assert.match(deployedDemo, /id="resultAnnouncement"/);
 assert.doesNotMatch(deployedDemo, /content="index,\s*follow"/i);
 const normalizeHtml = (value) => value.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 assert.equal(normalizeHtml(deployedDemo), normalizeHtml(deployedCalculator));
+
+const legacyDemo = await readFile(new URL("./myopia-risk-calculator/index.html", import.meta.url), "utf8");
+assert.equal(normalizeHtml(legacyDemo), normalizeHtml(deployedDemo));
+
+const generatedStaticDemo = await readFile(
+  new URL("./dist/static/demo/index.html", import.meta.url),
+  "utf8",
+);
+assert.equal(normalizeHtml(generatedStaticDemo), normalizeHtml(deployedDemo));
+
+const probabilityFunctionSource = deployedDemo.match(
+  /function probabilityDisplay\(result\) \{[^]*?\n  \}(?=\n\n  function displayOption)/,
+)?.[0];
+assert.ok(probabilityFunctionSource, "generated demo must expose the display rounding helper");
+const probabilityDisplay = Function(`${probabilityFunctionSource}; return probabilityDisplay;`)();
+for (const probabilities of [
+  [0.4415, 0.4785, 0.08],
+  [0.6351, 0.3176, 0.0473],
+  [0.99994, 0.00003, 0.00003],
+]) {
+  const displayed = probabilityDisplay({
+    probabilities: {
+      healthy: probabilities[0],
+      myopia: probabilities[1],
+      comorbidity: probabilities[2],
+    },
+  });
+  assert.equal(
+    displayed.reduce((sum, value) => sum + Math.round(value * 1000), 0),
+    1000,
+    `displayed probabilities must sum to 100.0% for ${probabilities.join(",")}`,
+  );
+}
 
 const calculatorSource = await readFile(
   new URL("./third_party/myopia-risk-calculator/index.html", import.meta.url),
@@ -126,12 +167,21 @@ assert.doesNotMatch(JSON.stringify(manifestBody), /mailto:/i);
 assert.doesNotMatch(JSON.stringify(manifestBody), /cosine753\.github\.io/i);
 
 const privacySource = await readFile(new URL("./privacy.html", import.meta.url), "utf8");
+const privacyAlias = await readFile(new URL("./privacy/index.html", import.meta.url), "utf8");
 assert.match(privacySource, /<title>隐私与公开边界 · echosine\.net<\/title>/);
 assert.match(privacySource, /不上传/);
 assert.match(privacySource, /基础访问日志/);
 assert.match(privacySource, /href="\/privacy\.html"/);
 assert.doesNotMatch(privacySource, /mailto:/i);
 assert.doesNotMatch(privacySource, /\{\{需你填写:/);
+assert.equal(normalizeHtml(privacyAlias), normalizeHtml(privacySource));
+assert.doesNotMatch(privacyAlias, /mailto:/i);
+
+for (const [path, expected] of [["CNAME", "echosine.net"], [".nojekyll", ""], ["sitemap.xml", /<urlset/]]) {
+  const body = await readFile(new URL(`./${path}`, import.meta.url), "utf8");
+  if (expected instanceof RegExp) assert.match(body, expected, path);
+  else assert.equal(body.trim(), expected, path);
+}
 
 for (const path of ["/privacy", "/privacy/", "/privacy.html"]) {
   const page = await fetchPath(path);

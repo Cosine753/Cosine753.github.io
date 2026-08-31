@@ -7,6 +7,18 @@
 <meta name="description" content="基于锁定两阶段Logistic模型的儿童近视及近视–干眼共病问卷风险分层研究演示工具。所有计算在浏览器本地完成，不上传、不保存任何输入。" />
 <meta name="robots" content="noindex, nofollow" />
 <meta name="referrer" content="no-referrer" />
+<meta name="theme-color" content="#103943" />
+<link rel="canonical" href="https://echosine.net/demo/" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:url" content="https://echosine.net/demo/" />
+<meta property="og:title" content="Vision Triage · 匿名研究演示" />
+<meta property="og:description" content="浏览器本地运行的两阶段风险分层研究演示；不上传、不保存问卷输入。" />
+<meta property="og:image" content="https://echosine.net/og.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Vision Triage 匿名研究演示预览图" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b776e'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' font-weight='700' fill='%23ffffff' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E" />
 <style>
@@ -24,6 +36,19 @@ button { background-color: transparent; background-image: none; cursor: pointer;
 img, svg, video, canvas { display: block; vertical-align: middle; max-width: 100%; }
 code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 [hidden] { display: none !important; }
+
+.skip-link {
+  position: absolute; left: 14px; top: 10px; z-index: 20;
+  transform: translateY(-160%); padding: 9px 13px;
+  border-radius: 6px; background: var(--yellow); color: #273b3d;
+  font-weight: 750; box-shadow: 0 5px 16px rgba(19,42,54,.16);
+}
+.skip-link:focus { transform: none; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
 
 /* ---- application styles (ported verbatim from the deployed build) ---- */
 :root {
@@ -51,6 +76,9 @@ body {
 }
 button, select { font: inherit; }
 a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 3px solid #f0c95b; outline-offset: 3px;
+}
 
 main { min-height: 100vh; overflow: hidden; }
 .site-header {
@@ -76,6 +104,10 @@ main { min-height: 100vh; overflow: hidden; }
   border: 1px solid var(--line); background: rgba(255,255,255,.55); border-radius: 99px;
   padding: 7px 10px; color: #53636b; font-size: 11px;
 }
+.calculator-nav { display: flex; align-items: center; gap: 14px; margin-left: auto; margin-right: 18px; }
+.calculator-nav a { color: #53636b; font-size: 11px; font-weight: 700; text-underline-offset: 3px; }
+.calculator-nav a:hover { color: var(--teal); text-decoration: underline; }
+
 
 .hero {
   width: min(1180px, calc(100% - 48px));
@@ -139,6 +171,8 @@ main { min-height: 100vh; overflow: hidden; }
 .completion > span { display: block; text-align: right; color: var(--teal); font-weight: 800; font-size: 12px; margin-bottom: 7px; }
 .completion-track, .probability-track { height: 5px; background: #e7eeee; border-radius: 99px; overflow: hidden; }
 .completion-track i { display: block; height: 100%; background: var(--teal); transition: width .25s ease; }
+.completion-track[role="progressbar"] { min-width: 80px; }
+
 .question-group { border: 0; padding: 32px 0 5px; margin: 0; }
 .question-group + .question-group { border-top: 1px solid var(--line); margin-top: 25px; }
 .question-group legend { width: 100%; display: flex; align-items: center; gap: 13px; padding: 0; margin-bottom: 22px; }
@@ -149,20 +183,25 @@ main { min-height: 100vh; overflow: hidden; }
 .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .field { position: relative; display: grid; grid-template-columns: minmax(160px, 1fr) minmax(150px, .72fr); align-items: center; gap: 16px; border: 1px solid #dfe7e8; border-radius: 10px; padding: 15px 16px; background: #fbfcfb; transition: .2s ease; }
 .field:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(11,119,110,.08); background: white; }
-.field-label > span, .field-label small { display: block; }
+.field-label > span, .field-label small { margin-top: 4px; color: #65747d; font-size: 11px; }
 .field-label > span { font-weight: 680; font-size: 13px; }
 .field-label small { margin-top: 4px; color: #8a969b; font-size: 10px; }
-.field-order { position: absolute; top: 7px; right: 9px; color: #bac4c7; font-size: 8px; }
+.field-order { position: absolute; top: 7px; right: 9px; color: #65747d; font-size: 9px; }
 .select-wrap { position: relative; }
 .select-wrap::after { content: "⌄"; position: absolute; right: 10px; top: 50%; transform: translateY(-56%); color: var(--teal); pointer-events: none; }
-select { width: 100%; appearance: none; border: 0; border-bottom: 1px solid #c8d4d6; background: transparent; padding: 9px 26px 9px 2px; outline: none; color: #263d47; font-size: 12px; cursor: pointer; }
+select { width: 100%; appearance: none; border: 0; border-bottom: 1px solid #c8d4d6; background: transparent; padding: 9px 26px 9px 2px; outline: none; color: #263d47; font-size: 13px; cursor: pointer; }
 .form-message { margin: 24px 0 0; padding: 12px 15px; border-radius: 7px; background: #fff0ed; color: #9d4738; font-size: 13px; }
+.privacy-note { margin: 24px 0 0; padding: 13px 15px; border: 1px solid #cfe3de; border-left: 4px solid var(--teal); border-radius: 7px; background: #f1faf7; color: #315b59; font-size: 12px; line-height: 1.65; }
+.privacy-note strong { color: #174d49; }
+.privacy-note a { color: var(--teal-dark); font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
+.init-message { margin-top: 18px; }
+
 .form-actions { display: flex; align-items: center; gap: 17px; margin-top: 34px; padding-top: 27px; border-top: 1px solid var(--line); }
 .calculate-button { min-width: 200px; }
 .calculate-button span { margin-left: 16px; }
 .reset-button { border: 1px solid #ccd7d9; border-radius: 7px; color: #52636b; background: white; padding: 13px 18px; cursor: pointer; }
 .reset-button:hover { border-color: #87999e; }
-.form-actions p { margin: 0 0 0 auto; color: #8a969b; font-size: 10px; }
+.form-actions p { margin: 0 0 0 auto; color: #65747d; font-size: 11px; }
 
 .result-panel {
   width: min(1180px, calc(100% - 48px)); margin: 0 auto 34px; padding: 42px;
@@ -190,6 +229,9 @@ select { width: 100%; appearance: none; border: 0; border-bottom: 1px solid #c8d
 .probability-card > p { margin: 23px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: #7c8a90; font-size: 10px; line-height: 1.55; }
 .result-panel.comorbidity { background: #3e3535; }
 .result-panel.myopia { background: #17384d; }
+.result-panel:focus { outline: 3px solid var(--yellow); outline-offset: 5px; }
+.result-announcement { min-height: 1px; }
+
 
 .method { width: min(1180px, calc(100% - 48px)); margin: 0 auto 75px; padding: 55px 0 0; }
 .method-heading { max-width: 760px; }
@@ -219,9 +261,14 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
 }
 
 @media (max-width: 600px) {
+  .site-header { height: auto; min-height: 72px; padding: 10px 0 8px; flex-wrap: wrap; row-gap: 0; align-content: center; }
+  .header-badges { display: none; }
+  .calculator-nav { order: 3; flex: 1 1 100%; width: 100%; margin: 5px 0 0; gap: 16px; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .calculator-nav::-webkit-scrollbar { display: none; }
+  .calculator-nav a { display: inline-flex; min-height: 32px; flex: 0 0 auto; align-items: center; white-space: nowrap; }
+
   .site-header, .hero, .notice, .calculator-shell, .result-panel, .method { width: min(100% - 28px, 1180px); }
-  .site-header { height: 72px; }
-  .header-badges span:not(:last-child) { display: none; }
+  /* mobile header sizing is defined above */
   .hero { min-height: auto; padding: 45px 0; }
   .hero h1 { font-size: 39px; }
   .hero-intro { font-size: 15px; }
@@ -246,6 +293,7 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
 </style>
 </head>
 <body>
+<a class="skip-link" href="#calculator">跳到问卷表单</a>
 <main>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="返回页面顶部">
@@ -255,17 +303,22 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
         <small>Questionnaire research demo</small>
       </span>
     </a>
+    <nav class="calculator-nav" aria-label="相关页面">
+      <a href="/work/myopia-risk-calculator/">项目详情</a>
+      <a href="/status.html">项目状态</a>
+      <a href="/privacy.html">隐私边界</a>
+    </nav>
     <div class="header-badges" aria-label="网站特性">
       <span>本地计算</span>
       <span>不保存输入</span>
-      <span>Model v2026.07</span>
+      <span>Locked model · v1.0.0</span>
     </div>
   </header>
 
-  <section class="hero" id="top">
+  <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="hero-copy">
       <p class="kicker">Pediatric vision risk stratification</p>
-      <h1>儿童近视与干眼共病<br />问卷风险分层计算器</h1>
+      <h1 id="hero-title">儿童近视与干眼共病<br />问卷风险分层计算器</h1>
       <p class="hero-intro">
         输入15项非侵入性问卷信息，获得两阶段模型概率及三分类风险分层结果。
         所有计算均在当前浏览器中完成。
@@ -301,24 +354,27 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
     </aside>
   </section>
 
-  <section class="notice" aria-label="重要提示">
+  <section class="notice" aria-labelledby="notice-title">
     <span class="notice-icon">!</span>
-    <p><strong>研究演示工具：</strong>结果仅用于问卷风险分层和科研展示，不能替代眼科检查、临床诊断或治疗建议。</p>
+    <p><strong id="notice-title">研究演示工具：</strong>结果仅用于问卷风险分层和科研展示，不能替代眼科检查、临床诊断或治疗建议。</p>
   </section>
 
-  <section class="calculator-shell" id="calculator">
+  <section class="calculator-shell" id="calculator" aria-labelledby="calculator-title">
     <div class="section-heading">
       <div>
         <p class="kicker">Questionnaire</p>
-        <h2>填写问卷信息</h2>
+        <h2 id="calculator-title">填写问卷信息</h2>
       </div>
-      <div class="completion" aria-live="polite">
+      <div class="completion" aria-label="问卷完成度">
         <span id="completionCount">0/15</span>
-        <div class="completion-track"><i id="completionBar" style="width: 0%"></i></div>
+        <div class="completion-track" role="progressbar" aria-labelledby="completionCount" aria-valuemin="0" aria-valuemax="15" aria-valuenow="0" aria-valuetext="0/15 已完成"><i id="completionBar" style="width: 0%"></i></div>
       </div>
     </div>
 
-    <form id="questionnaire" novalidate autocomplete="off">
+    <form id="questionnaire" novalidate autocomplete="off" aria-describedby="privacy-note">
+      <p class="privacy-note" id="privacy-note"><strong>请使用虚构或示例回答。</strong> 不要输入真实患者姓名、联系方式、病历号或其他可识别信息。<a href="/privacy.html">查看隐私与数据流向</a></p>
+      <noscript><p class="form-message init-message">此演示需要启用 JavaScript；问卷答案不会发送到服务器。</p></noscript>
+      <p class="form-message init-message" id="initMessage" role="alert" hidden>演示初始化失败，请刷新页面后重试；请不要提交真实患者信息。</p>
       <div id="questionGroups"></div>
       <p class="form-message" id="formMessage" role="alert" hidden></p>
       <div class="form-actions">
@@ -329,12 +385,13 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
     </form>
   </section>
 
+  <div id="resultAnnouncement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
   <div id="resultMount"></div>
 
-  <section class="method" id="method">
+  <section class="method" id="method" aria-labelledby="method-title">
     <div class="method-heading">
       <p class="kicker">How it works</p>
-      <h2>透明、锁定、可复核的计算路径</h2>
+      <h2 id="method-title">透明、锁定、可复核的计算路径</h2>
       <p>模型不会在网页中重新训练、更新系数或调整阈值。</p>
     </div>
     <div class="method-grid">
@@ -349,13 +406,13 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
         <code>P(单纯近视) = pA × (1 − pC|A)</code>
         <code>P(共病) = pA × pC|A</code>
       </div>
-      <p>模型版本：2026-07-22；Stage 1阈值：0.575；Stage 2阈值：0.150。</p>
+      <p>锁定模型版本：v1.0.0（快照日期 2026-07-22）；Stage 1阈值：0.575；Stage 2阈值：0.150。</p>
     </details>
   </section>
 
   <footer>
     <div><strong>Vision Triage</strong><span>Questionnaire-based research prototype</span></div>
-    <p>本工具不收集个人信息，不提供诊断，不构成医疗建议。如有视力下降、眼干、疼痛或其他不适，请及时接受专业眼科检查。</p>
+    <p>本工具不收集个人信息，不提供诊断，不构成医疗建议。如有视力下降、眼干、疼痛或其他不适，请及时接受专业眼科检查。<br /><a href="/work/myopia-risk-calculator/">项目详情</a> · <a href="/privacy.html">隐私边界</a></p>
   </footer>
 </main>
 
@@ -1092,6 +1149,14 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
   }, []);
 
   var values = {};
+  var MODEL_VERSION = "1.0.0";
+  var MODEL_SNAPSHOT_DATE = "2026-07-22";
+
+  function scrollBehavior() {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth";
+  }
 
   function logistic(value) {
     return 1 / (1 + Math.exp(-value));
@@ -1130,6 +1195,29 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
     return (value * 100).toFixed(1) + "%";
   }
 
+  function probabilityDisplay(result) {
+    var raw = [
+      result.probabilities.healthy,
+      result.probabilities.myopia,
+      result.probabilities.comorbidity
+    ];
+    var total = raw.reduce(function (sum, value) { return sum + Math.max(0, value); }, 0);
+    if (total === 0) { return [0, 0, 1]; }
+
+    var exactUnits = raw.map(function (value) { return Math.max(0, value) / total * 1000; });
+    var units = exactUnits.map(function (value) { return Math.floor(value); });
+    var remaining = 1000 - units.reduce(function (sum, value) { return sum + value; }, 0);
+    var order = exactUnits.map(function (value, index) {
+      return { index: index, remainder: value - units[index] };
+    }).sort(function (left, right) {
+      return right.remainder - left.remainder || left.index - right.index;
+    });
+    for (var index = 0; index < remaining; index += 1) {
+      units[order[index % order.length].index] += 1;
+    }
+    return units.map(function (value) { return value / 1000; });
+  }
+
   function displayOption(variable, option) {
     if (variable === "Main_Types_of_Outdoor_Activities" && option.value === "5") {
       return "其他";
@@ -1150,10 +1238,13 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
 
     GROUPS.forEach(function (group, groupIndex) {
       var fieldset = el("fieldset", "question-group");
+      var legendId = "group-" + (groupIndex + 1) + "-title";
+      fieldset.setAttribute("aria-labelledby", legendId);
 
       var legend = document.createElement("legend");
       legend.appendChild(el("span", null, String(groupIndex + 1).padStart(2, "0")));
       var legendText = document.createElement("span");
+      legendText.id = legendId;
       legendText.appendChild(el("strong", null, group.title));
       legendText.appendChild(el("small", null, group.eyebrow));
       legend.appendChild(legendText);
@@ -1176,7 +1267,10 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
         var select = document.createElement("select");
         select.id = "field-" + variable;
         select.setAttribute("aria-required", "true");
-        select.appendChild(new Option("请选择", ""));
+        select.required = true;
+        var placeholder = new Option("请选择", "");
+        placeholder.disabled = true;
+        select.appendChild(placeholder);
         config.options.forEach(function (option) {
           select.appendChild(new Option(displayOption(variable, option), option.value));
         });
@@ -1203,8 +1297,17 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
     var completed = ALL_VARIABLES.filter(function (variable) {
       return values[variable];
     }).length;
-    document.getElementById("completionCount").textContent = completed + "/" + ALL_VARIABLES.length;
-    document.getElementById("completionBar").style.width = (completed / ALL_VARIABLES.length) * 100 + "%";
+    var total = ALL_VARIABLES.length;
+    var label = completed + "/" + total;
+    var completionCount = document.getElementById("completionCount");
+    var completionBar = document.getElementById("completionBar");
+    var completionTrack = completionBar.parentElement;
+    completionCount.textContent = label;
+    completionCount.setAttribute("aria-label", label + " 已完成");
+    completionBar.style.width = (completed / total) * 100 + "%";
+    completionTrack.setAttribute("aria-valuenow", String(completed));
+    completionTrack.setAttribute("aria-valuemax", String(total));
+    completionTrack.setAttribute("aria-valuetext", label + " 已完成");
   }
 
   function showMessage(text) {
@@ -1221,6 +1324,7 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
 
   function clearResult() {
     document.getElementById("resultMount").innerHTML = "";
+    document.getElementById("resultAnnouncement").textContent = "";
   }
 
   function renderResult(result) {
@@ -1230,7 +1334,9 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
 
     var section = el("section", "result-panel " + copy.tone);
     section.id = "result-panel";
-    section.setAttribute("aria-live", "polite");
+    section.setAttribute("tabindex", "-1");
+    section.setAttribute("role", "region");
+    section.setAttribute("aria-labelledby", "result-title");
 
     var summary = el("div", "result-summary");
     summary.appendChild(el("p", "kicker", "Risk-stratification result"));
@@ -1238,12 +1344,14 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
     var titleRow = el("div", "result-title-row");
     titleRow.appendChild(el("div", "result-symbol", copy.symbol));
     var titleText = document.createElement("div");
-    titleText.appendChild(el("h2", null, copy.title));
+    var resultTitle = el("h2", null, copy.title);
+    resultTitle.id = "result-title";
+    titleText.appendChild(resultTitle);
     titleText.appendChild(el("p", null, copy.english));
     titleRow.appendChild(titleText);
     summary.appendChild(titleRow);
 
-    summary.appendChild(el("p", "result-note", copy.note));
+    summary.appendChild(el("p", "result-note", copy.note + " 这不是诊断或治疗建议。"));
 
     var readouts = el("div", "stage-readouts");
     [
@@ -1261,17 +1369,26 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
 
     var card = el("div", "probability-card");
     card.appendChild(el("h3", null, "三分类组合概率"));
+    var displayedProbabilities = probabilityDisplay(result);
     [
-      ["健康", result.probabilities.healthy, "bar-healthy"],
-      ["单纯近视", result.probabilities.myopia, "bar-myopia"],
-      ["近视–干眼共病", result.probabilities.comorbidity, "bar-comorbidity"]
-    ].forEach(function (row) {
+      ["健康", displayedProbabilities[0], "bar-healthy"],
+      ["单纯近视", displayedProbabilities[1], "bar-myopia"],
+      ["近视–干眼共病", displayedProbabilities[2], "bar-comorbidity"]
+    ].forEach(function (row, rowIndex) {
       var wrapper = el("div", "probability-row");
       var head = document.createElement("div");
-      head.appendChild(el("span", null, row[0]));
+      var rowLabel = el("span", null, row[0]);
+      rowLabel.id = "probability-label-" + rowIndex;
+      head.appendChild(rowLabel);
       head.appendChild(el("strong", null, percent(row[1])));
       wrapper.appendChild(head);
       var track = el("div", "probability-track");
+      track.setAttribute("role", "progressbar");
+      track.setAttribute("aria-labelledby", rowLabel.id);
+      track.setAttribute("aria-valuemin", "0");
+      track.setAttribute("aria-valuemax", "100");
+      track.setAttribute("aria-valuenow", String(Math.round(row[1] * 1000) / 10));
+      track.setAttribute("aria-valuetext", percent(row[1]));
       var fill = document.createElement("i");
       fill.className = row[2];
       fill.style.width = percent(row[1]);
@@ -1283,6 +1400,7 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
     section.appendChild(card);
 
     mount.appendChild(section);
+    document.getElementById("resultAnnouncement").textContent = "已生成" + copy.title + "（" + MODEL_VERSION + "，快照 " + MODEL_SNAPSHOT_DATE + "）；结果仅供研究演示，不是诊断或治疗建议。";
   }
 
   document.getElementById("questionnaire").addEventListener("submit", function (event) {
@@ -1301,7 +1419,10 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
     renderResult(calculate(values));
     window.setTimeout(function () {
       var panel = document.getElementById("result-panel");
-      if (panel) { panel.scrollIntoView({ behavior: "smooth" }); }
+      if (panel) {
+        panel.focus({ preventScroll: true });
+        panel.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+      }
     }, 50);
   });
 
@@ -1311,11 +1432,16 @@ footer p { max-width: 750px; margin: 0; text-align: right; font-size: 10px; line
     clearResult();
     hideMessage();
     updateCompletion();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: scrollBehavior() });
   });
 
-  buildForm();
-  updateCompletion();
+  try {
+    buildForm();
+    updateCompletion();
+  } catch (error) {
+    var initMessage = document.getElementById("initMessage");
+    if (initMessage) { initMessage.hidden = false; }
+  }
 
   // exposed only for offline reproducibility checks
   window.__visionTriage = { model: model, calculate: calculate };
